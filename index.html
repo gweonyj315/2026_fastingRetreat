@@ -265,6 +265,8 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .prog-row .bar{height:7px;border-radius:9px;background:#E4E7F7;overflow:hidden;margin-top:6px}
 .prog-row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--peri),var(--indigo))}
 .prog-row .num{font-family:var(--display);font-size:20px;color:var(--indigo);min-width:58px;text-align:right}
+.kick-btn{flex:none;height:32px;padding:0 10px;border-radius:9px;font-size:12.5px;font-weight:800;color:var(--danger);background:#FDECEE}
+.kick-btn:active{transform:scale(.94)}
 .prog-row .num small{font-family:var(--font);font-size:12px;color:var(--ink-3);font-weight:700}
 @media (min-width:640px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
 
@@ -969,7 +971,11 @@ function adminTools() {
     if (!res.ok) { out.className = 'hint err'; out.textContent = j.error || '실패했어요'; return; }
     out.className = 'hint ok'; out.innerHTML = `${j.name}(${j.campus}) 님의 임시 비밀번호: <b style="font-size:17px;letter-spacing:1px">${j.temp_password}</b>`;
   };
-  return h('div', { style: 'margin-top:22px' }, h('label', { style: 'font-size:13px;font-weight:800;color:var(--indigo)' }, '🔑 관리자 · 회원 비밀번호 초기화'),
+  return h('div', { class: 'card admin-card', style: 'margin-top:22px' },
+    h('h3', {}, '🔑 관리자 도구'),
+    h('p', {}, '회원별 진행 현황을 보고, 필요하면 강제탈퇴시킬 수 있어요.'),
+    h('button', { class: 'btn btn-primary btn-block', style: 'height:48px;margin-bottom:16px', onclick: openAdminProgress }, '📊 전체 진행 현황 · 회원 관리'),
+    h('label', { style: 'font-size:13px;font-weight:800;color:var(--indigo)' }, '회원 비밀번호 초기화'),
     h('div', { class: 'input-wrap', style: 'margin-top:6px' }, uid, btn), out);
 }
 
@@ -1218,11 +1224,11 @@ async function resetMyPuzzle() {
 }
 async function openAdminProgress() {
   const body = h('div', {}, h('div', { style: 'padding:30px;display:grid;place-items:center' }, h('div', { class: 'spinner dark' })));
-  Sheet.show({ title: '전체 진행 현황', sub: '회원별로 맞춘 퍼즐 조각 수', body });
+  Sheet.show({ title: '전체 진행 현황', sub: '회원별로 맞춘 퍼즐 조각 수 · 회원 관리', body });
   const { data, error } = await sb.rpc('admin_progress');
   body.innerHTML = '';
   if (error) { body.append(h('div', { class: 'empty' }, '불러오지 못했어요. 관리자 계정인지 확인해 주세요.')); return; }
-  const rows = data || [];
+  let rows = data || [];
   const n = rows.length, sum = rows.reduce((a, r) => a + r.completed, 0);
   const tDay = todayDay();
   const todayCount = tDay ? (S.stats[tDay] || 0) : 0;
@@ -1248,13 +1254,37 @@ async function openAdminProgress() {
     list.innerHTML = '';
     const f = rows.filter(r => (!campusFilter || r.campus === campusFilter) && (!q || `${r.name} ${r.username} ${r.campus}`.toLowerCase().includes(q)));
     if (!f.length) { list.append(h('div', { class: 'empty' }, '해당하는 회원이 없어요')); return; }
-    f.forEach(r => list.append(h('div', { class: 'prog-row' },
-      avatar(r.name),
-      h('div', { class: 'who' },
-        h('b', {}, r.name), h('span', {}, `${r.campus} · ${r.student_id} · @${r.username}` + (r.partial ? ` · 진행 중 ${r.partial}일` : '') + (r.last_prayed_at ? ` · 최근 ${timeAgo(r.last_prayed_at)}` : '')),
-        h('div', { class: 'bar' }, h('i', { style: `width:${Math.min(r.completed, 30) / 30 * 100}%` }))),
-      h('div', { class: 'num' }, String(r.completed), h('small', {}, ' /30')))));
+    f.forEach(r => {
+      const isMe = r.user_id === S.me.id;
+      const row = h('div', { class: 'prog-row' },
+        avatar(r.name),
+        h('div', { class: 'who' },
+          h('b', {}, r.name + (isMe ? ' (나)' : '')), h('span', {}, `${r.campus} · ${r.student_id} · @${r.username}` + (r.partial ? ` · 진행 중 ${r.partial}일` : '') + (r.last_prayed_at ? ` · 최근 ${timeAgo(r.last_prayed_at)}` : '')),
+          h('div', { class: 'bar' }, h('i', { style: `width:${Math.min(r.completed, 30) / 30 * 100}%` }))),
+        h('div', { class: 'num' }, String(r.completed), h('small', {}, ' /30')),
+        isMe ? null : h('button', { class: 'kick-btn', 'aria-label': `${r.name} 강제탈퇴`, onclick: () => kickMember(r, row) }, '탈퇴'));
+      list.append(row);
+    });
   };
+  async function kickMember(r, row) {
+    const ok = await dialog({
+      title: `${r.name} 회원을 강제탈퇴할까요?`,
+      message: `${r.campus} · ${r.student_id} · @${r.username}\n\n이 회원의 계정과 기도제목·댓글·공감·퍼즐 기록이 모두 삭제되고 되돌릴 수 없어요.`,
+      ok: '강제탈퇴', cancel: '취소', danger: true
+    });
+    if (!ok) return;
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/admin-delete-user`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ user_id: r.user_id })
+    });
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) return toast(j.error || '탈퇴 처리하지 못했어요');
+    rows = rows.filter(x => x.user_id !== r.user_id);
+    row.remove();
+    toast(`${r.name} 회원을 탈퇴 처리했어요`);
+    if (S.section === 'prayers') loadFeed(true);
+  }
   search.oninput = () => { q = search.value.trim().toLowerCase(); paint(); };
   body.append(search, chips, list);
   paintChips(); paint();
