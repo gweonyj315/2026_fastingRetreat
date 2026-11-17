@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2026 경인금식수련회 기도앱 · No way? God's Way!</title>
+<meta name="description" content="2026 CCC 경인금식수련회를 준비하는 30일 기도 여정. 매일 기도하며 퍼즐을 완성해요.">
+<meta property="og:title" content="2026 경인금식수련회 기도앱">
+<meta property="og:description" content="No way? God's Way! — 30일 기도 여정에 함께해요">
+<meta name="theme-color" content="#CFE2F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="경인금식기도">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" as="image" href="assets/poster.webp">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  /* 포스터에서 뽑은 색 */
+  --indigo:#2F2A7E;      /* NO WAY? GOD'S WAY! 타이틀 */
+  --indigo-2:#3D3796;
+  --peri:#6C7EE0;        /* 한글 부제 */
+  --peri-soft:#DCE2FB;
+  --sky:#CFE2F7;         /* 하늘 */
+  --sky-2:#E9EEFB;
+  --lav:#D9D0F4;         /* 라벤더 안개 */
+  --sun:#FFF5DA;         /* 해 */
+  --gold:#FFC95C;        /* 오늘 조각 빛 */
+  --night:#14163A;       /* 하단 산 그림자 */
+  --rock:#4C4A49;        /* 바위 */
+  --ink:#1D1C3A;
+  --ink-2:#55557A;
+  --ink-3:#8A8CA8;
+  --line:rgba(47,42,126,.10);
+  --card:rgba(255,255,255,.82);
+  --ok:#3E9C78;
+  --danger:#D2505A;
+  --r-lg:22px; --r-md:16px; --r-sm:12px;
+  --shadow:0 10px 30px -12px rgba(31,28,90,.28);
+  --shadow-sm:0 4px 14px -6px rgba(31,28,90,.22);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+  --nav-h:68px;
+  --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+  --display:"Anton","Pretendard Variable",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);color:var(--ink);font-size:15px;line-height:1.55;
+  background:linear-gradient(180deg,#CFE2F7 0%,#E3E6FA 38%,#EEE9F8 70%,#F6F3FA 100%) fixed;
+  min-height:100dvh;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere;
+}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;touch-action:manipulation}
+input,textarea{font-size:16px} /* iOS 확대 방지 */
+a{color:var(--indigo)}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- 공통 컴포넌트 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 20px;border-radius:var(--r-md);
+  font-weight:700;font-size:16px;transition:transform .12s ease,background .2s,opacity .2s;user-select:none}
+.btn:active{transform:scale(.97)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn-primary{background:var(--indigo);color:#fff;box-shadow:0 8px 20px -10px rgba(47,42,126,.8)}
+.btn-primary:hover{background:var(--indigo-2)}
+.btn-soft{background:var(--peri-soft);color:var(--indigo)}
+.btn-ghost{background:rgba(255,255,255,.7);color:var(--indigo);border:1px solid var(--line)}
+.btn-block{width:100%}
+.btn-sm{height:38px;padding:0 14px;font-size:14px;border-radius:12px}
+.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:13px;font-weight:700;color:var(--ink-2)}
+.input-wrap{position:relative;display:flex;gap:8px}
+.input{width:100%;height:50px;padding:0 14px;border-radius:14px;border:1.5px solid #DADDF0;background:#fff;outline:none;transition:border .2s,box-shadow .2s}
+.input:focus{border-color:var(--peri);box-shadow:0 0 0 4px rgba(108,126,224,.15)}
+.input.err{border-color:var(--danger)}
+textarea.input{height:auto;min-height:150px;padding:14px;resize:vertical;line-height:1.6}
+.hint{font-size:12.5px;color:var(--ink-3);min-height:0}
+.hint.ok{color:var(--ok)} .hint.err{color:var(--danger)}
+.eye{position:absolute;right:6px;top:5px;height:40px;width:40px;border-radius:10px;color:var(--ink-3);display:grid;place-items:center}
+.chip{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 12px;border-radius:999px;background:#fff;border:1px solid #E0E2F2;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.chip:active{transform:scale(.96)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.b-ok{background:#E2F4EC;color:#287258}.b-gold{background:#FFF1CF;color:#8A5B00}.b-gray{background:#EDEEF5;color:#6B6D88}.b-peri{background:var(--peri-soft);color:var(--indigo)}
+.spinner{width:22px;height:22px;border-radius:50%;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
+.spinner.dark{border-color:rgba(47,42,126,.15);border-top-color:var(--indigo)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skeleton{background:linear-gradient(90deg,#EEF0F9 0%,#F8F9FD 50%,#EEF0F9 100%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:12px}
+@keyframes sk{to{background-position:-200% 0}}
+
+/* ---------- 스플래시 ---------- */
+#splash{position:fixed;inset:0;display:grid;place-items:center;z-index:100;background:linear-gradient(180deg,#CFE2F7,#EEE9F8)}
+#splash .logo{font-family:var(--display);color:var(--indigo);font-size:40px;line-height:.95;text-align:center;letter-spacing:.5px}
+#splash .spinner{margin:22px auto 0}
+
+/* ---------- 로그인 / 회원가입 ---------- */
+#auth{min-height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+  padding:calc(28px + var(--safe-t)) 18px calc(28px + var(--safe-b))}
+#auth .bg{position:fixed;inset:-40px;background:url(assets/poster-tiny.webp) center/cover;filter:blur(18px) saturate(.9);opacity:.55;z-index:-2}
+#auth .veil{position:fixed;inset:0;background:linear-gradient(180deg,rgba(207,226,247,.55),rgba(238,233,248,.9) 60%,#F6F3FA);z-index:-1}
+.brand{text-align:center;margin:10px 0 22px}
+.brand .t{font-family:var(--display);color:var(--indigo);font-size:clamp(44px,13vw,64px);line-height:.92;letter-spacing:.5px}
+.brand .s{color:var(--peri);font-weight:800;font-size:18px;margin-top:10px;letter-spacing:-.2px}
+.brand .m{color:var(--ink-2);font-size:13.5px;margin-top:6px;font-weight:600}
+.auth-card{width:100%;max-width:420px;padding:22px 20px 20px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#EDEFFA;border-radius:14px;padding:4px;margin-bottom:20px}
+.tabs button{height:42px;border-radius:11px;font-weight:700;color:var(--ink-3)}
+.tabs button.on{background:#fff;color:var(--indigo);box-shadow:var(--shadow-sm)}
+.auth-links{display:flex;justify-content:center;align-items:center;gap:4px;margin-top:16px;font-size:13.5px;line-height:20px;color:var(--ink-3)}
+.auth-links button{padding:6px 8px;color:var(--ink-2);font-weight:600;font-size:13.5px;line-height:20px}
+/* 캠퍼스 선택 (펼쳐지는 목록) */
+.picker-btn{width:100%;height:50px;padding:0 14px;border-radius:14px;border:1.5px solid #DADDF0;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:16px;text-align:left;transition:border .2s,box-shadow .2s}
+.picker-btn .ph{color:#9A9CB5}
+.picker-btn .val{font-weight:700;color:var(--ink)}
+.picker-btn svg{flex:none;color:var(--ink-3);transition:transform .2s}
+.picker.open .picker-btn{border-color:var(--peri);box-shadow:0 0 0 4px rgba(108,126,224,.15)}
+.picker.open .picker-btn svg{transform:rotate(180deg)}
+.picker.err .picker-btn{border-color:var(--danger)}
+.picker-list{display:none;margin-top:6px;max-height:236px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  border:1.5px solid #DADDF0;border-radius:14px;background:#fff;padding:5px;box-shadow:var(--shadow-sm)}
+.picker.open .picker-list{display:block;animation:fadeUp .2s ease}
+.picker-opt{width:100%;min-height:46px;padding:0 12px;border-radius:10px;text-align:left;font-size:15.5px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between}
+.picker-opt:hover{background:#F3F4FB}
+.picker-opt.on{background:var(--peri-soft);color:var(--indigo);font-weight:800}
+select.input{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8CA8' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:38px}
+.form-err{background:#FDECEE;color:#A63842;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;font-weight:600}
+
+/* ---------- 앱 셸 ---------- */
+#app{min-height:100dvh}
+.topbar{position:sticky;top:0;z-index:20;padding:calc(10px + var(--safe-t)) 16px 10px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg,rgba(207,226,247,.92),rgba(207,226,247,.72));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.topbar .logo{display:flex;flex-direction:column;line-height:1}
+.topbar .logo b{font-family:var(--display);font-weight:400;color:var(--indigo);font-size:22px;letter-spacing:.4px}
+.topbar .logo span{font-size:11.5px;color:var(--ink-2);font-weight:700;margin-top:4px}
+.me-btn{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9);font-weight:700;font-size:13.5px;color:var(--ink-2)}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;flex:none}
+main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + var(--safe-b))}
+.section{display:none;animation:fadeUp .35s ease}
+.section.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec-title{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:8px 2px 14px}
+.sec-title h2{margin:0;font-size:22px;letter-spacing:-.4px;color:var(--ink)}
+.sec-title p{margin:2px 0 0;color:var(--ink-2);font-size:13.5px}
+
+/* 하단 플로팅 내비게이션 */
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safe-b));z-index:30;width:min(calc(100% - 28px),440px);height:var(--nav-h);
+  display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:7px;border-radius:24px;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.95);box-shadow:0 14px 34px -10px rgba(31,28,90,.38)}
+.nav button{border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink-3);font-size:12px;font-weight:700;transition:background .25s,color .25s}
+.nav button svg{width:24px;height:24px}
+.nav button.on{background:var(--indigo);color:#fff;box-shadow:0 6px 16px -6px rgba(47,42,126,.9)}
+
+/* ---------- 섹션 1: 기도 여정(퍼즐) ---------- */
+.journey{display:flex;flex-direction:column;gap:14px}
+.j-right{display:contents}
+#jHero{order:-1}
+.today-card{order:2}
+.admin-card{order:3}
+.j-hero{padding:16px 18px}
+.j-hero .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.j-hero .day{font-family:var(--display);font-size:30px;color:var(--indigo);line-height:1;letter-spacing:.5px}
+.j-hero .date{font-size:13.5px;color:var(--ink-2);font-weight:600;margin-top:4px}
+.dday{font-family:var(--display);font-size:15px;color:#fff;background:var(--night);padding:6px 11px;border-radius:10px;letter-spacing:.6px;white-space:nowrap}
+.progress{height:10px;border-radius:99px;background:#E4E7F7;overflow:hidden;margin-top:14px}
+.progress i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--peri),var(--indigo));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.j-hero .meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);margin-top:7px;font-weight:600}
+.puzzle-frame{position:relative;border-radius:22px;overflow:hidden;background:var(--night);box-shadow:var(--shadow);aspect-ratio:1000/1250}
+.puzzle-frame svg{display:block;width:100%;height:100%}
+.pz-label{font-family:var(--display);fill:#fff;text-anchor:middle;pointer-events:none}
+.pz-label.n{font-size:46px;opacity:.78}
+.pz-label.d{font-size:24px;opacity:.6;font-family:var(--font);font-weight:700}
+.pz-label.locked{opacity:.32}
+.pz-outline{fill:rgba(20,22,58,.18);stroke:rgba(255,255,255,.42);stroke-width:2.2;stroke-linejoin:round}
+.pz-outline.missed{fill:rgba(255,201,92,.07);stroke:rgba(255,214,140,.75);stroke-dasharray:10 8}
+.pz-outline.partial{fill:rgba(108,126,224,.22);stroke:rgba(220,226,251,.9)}
+.pz-done-edge{fill:none;stroke:rgba(255,255,255,.5);stroke-width:1.6;stroke-linejoin:round;pointer-events:none}
+.pz-glow{fill:rgba(255,215,120,.12);stroke:var(--gold);stroke-width:7;stroke-linejoin:round;pointer-events:none;animation:glow 1.8s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:1;stroke-width:7}50%{opacity:.55;stroke-width:11}}
+.pz-hit{fill:transparent;cursor:pointer}
+.pz-hit.locked{cursor:default}
+.pz-piece{transform-box:fill-box;transform-origin:center}
+.pz-piece.snap{animation:snap .9s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes snap{0%{opacity:0;transform:scale(1.35) rotate(-6deg)}60%{opacity:1}100%{opacity:1;transform:none}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-2);font-weight:600;padding:2px 4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.today-card{padding:18px}
+.today-card h3{margin:0 0 4px;font-size:17px}
+.today-card p{margin:0 0 14px;color:var(--ink-2);font-size:14px}
+.together{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#FFF6DE,#FFF);font-size:13.5px;font-weight:600;color:#6B4B00}
+.together b{font-size:17px;color:#8A5B00}
+.preview-banner{background:var(--night);color:#fff;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:600;display:block}
+.complete-card{padding:20px;text-align:center;background:linear-gradient(135deg,#FFF5DA,#E6E0F8)}
+.complete-card .big{font-family:var(--display);font-size:34px;color:var(--indigo);line-height:1.1}
+
+/* ---------- 바텀 시트 / 다이얼로그 ---------- */
+.sheet-wrap{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+.sheet-wrap.on{pointer-events:auto}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(18,20,50,.45);opacity:0;transition:opacity .28s}
+.sheet-wrap.on .sheet-backdrop{opacity:1}
+.sheet{position:relative;width:100%;max-width:640px;max-height:92dvh;background:#F7F7FC;border-radius:26px 26px 0 0;display:flex;flex-direction:column;
+  transform:translateY(105%);transition:transform .34s cubic-bezier(.2,.9,.25,1);box-shadow:0 -10px 40px -10px rgba(18,20,50,.4)}
+.sheet-wrap.on .sheet{transform:none}
+.sheet-wrap:not(.on) .sheet{visibility:hidden;transition:transform .34s cubic-bezier(.2,.9,.25,1),visibility 0s .34s}
+.sheet-grip{padding:10px 0 4px;display:grid;place-items:center;flex:none;touch-action:none}
+.sheet-grip i{width:42px;height:5px;border-radius:9px;background:#CBCDE0}
+.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 20px 12px;flex:none;touch-action:none}
+.sheet-head h3{margin:0;font-size:19px;letter-spacing:-.3px}
+.sheet-head .sub{font-size:13px;color:var(--ink-2);margin-top:3px;font-weight:600}
+.x-btn{width:38px;height:38px;border-radius:50%;background:#ECEDF6;display:grid;place-items:center;color:var(--ink-2);flex:none}
+.sheet-body{overflow-y:auto;overscroll-behavior:contain;padding:4px 20px 20px;flex:1}
+.sheet-foot{flex:none;padding:12px 16px calc(12px + var(--safe-b));background:#fff;border-top:1px solid var(--line);display:flex;gap:10px}
+.sheet-foot .btn{flex:1;height:54px;font-size:15px}
+.dlg-wrap{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(18,20,50,.5);animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.dlg{width:100%;max-width:360px;background:#fff;border-radius:22px;padding:24px 20px 16px;box-shadow:var(--shadow);animation:pop .25s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{transform:scale(.92);opacity:0}}
+.dlg h4{margin:0 0 8px;font-size:18px}
+.dlg p{margin:0 0 18px;color:var(--ink-2);font-size:14.5px;white-space:pre-line}
+.dlg .acts{display:flex;gap:8px}.dlg .acts .btn{flex:1;height:48px}
+.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 30px + var(--safe-b));transform:translateX(-50%) translateY(20px);opacity:0;z-index:90;
+  background:var(--night);color:#fff;padding:12px 18px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:var(--shadow);transition:all .3s;max-width:calc(100% - 40px);text-align:center;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.viewer{position:fixed;inset:0;z-index:85;background:rgba(10,10,30,.94);display:flex;align-items:center;justify-content:center;overflow:auto;animation:fade .2s}
+.viewer img{max-width:100%;max-height:100%;object-fit:contain}
+.viewer .x-btn{position:fixed;top:calc(14px + var(--safe-t));right:14px;background:rgba(255,255,255,.15);color:#fff}
+
+/* 기도제목 상세 시트 */
+.topic{margin-bottom:18px}
+.topic-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15.5px;margin-bottom:10px}
+.topic-h .dot{width:10px;height:10px;border-radius:50%}
+.dot.gi{background:var(--indigo)}.dot.ic{background:var(--peri)}
+.topic-img{border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);min-height:120px}
+.topic-img img{display:block;width:100%;height:auto;cursor:zoom-in}
+.topic-ph{aspect-ratio:3/2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;
+  background:linear-gradient(160deg,#EEF2FD,#F3EEFB);color:var(--ink-3);font-weight:600;font-size:14px}
+.topic-ph svg{width:44px;height:44px;opacity:.5}
+.pray-btn.done{background:#E2F4EC;color:#287258;box-shadow:none}
+.pray-btn.ic:not(.done){background:var(--peri)}
+
+/* 관리자 */
+.admin-card{padding:16px 18px;border:1.5px dashed #B9C3F4;background:rgba(240,242,255,.85)}
+.admin-card h3{margin:0 0 4px;font-size:15.5px;color:var(--indigo)}
+.admin-card p{margin:0 0 12px;font-size:13px;color:var(--ink-2)}
+.admin-card .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-size:22px;color:var(--indigo);line-height:1.2}
+.stat span{font-size:12.5px;color:var(--ink-2);font-weight:600}
+.prog-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.prog-row .who{flex:1;min-width:0}
+.prog-row .who b{font-size:14.5px}.prog-row .who span{display:block;font-size:12px;color:var(--ink-3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-row .bar{height:7px;border-radius:9px;background:#E4E7F7;overflow:hidden;margin-top:6px}
+.prog-row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--peri),var(--indigo))}
+.prog-row .num{font-family:var(--display);font-size:20px;color:var(--indigo);min-width:58px;text-align:right}
+.prog-row .num small{font-family:var(--font);font-size:12px;color:var(--ink-3);font-weight:700}
+@media (min-width:640px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* ---------- 섹션 2: 기도제목 ---------- */
+.add-btn{width:100%;height:56px;border-radius:18px;font-size:16px;margin-bottom:14px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:4px;margin-bottom:14px;position:sticky;top:calc(62px + var(--safe-t));z-index:10;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.seg button{height:42px;border-radius:12px;font-weight:700;color:var(--ink-3);font-size:14.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.seg button small{font-size:11px;font-weight:600;opacity:.8;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.seg button.on{background:var(--indigo);color:#fff}
+.feed{display:grid;gap:12px;align-items:start}
+.pr-card{padding:16px 16px 12px}
+.pr-head{display:flex;align-items:center;gap:10px}
+.pr-head .who{flex:1;min-width:0}
+.pr-head .who b{display:block;font-size:15px}
+.pr-head .who span{display:block;font-size:12.5px;color:var(--ink-3);font-weight:600}
+.more-btn{width:34px;height:34px;border-radius:10px;color:var(--ink-3);display:grid;place-items:center}
+.pr-content{margin:12px 0 12px;white-space:pre-wrap;font-size:15.5px;line-height:1.65;color:var(--ink)}
+.react-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.react{height:34px;padding:0 11px;border-radius:999px;background:#F1F2FA;border:1px solid transparent;font-size:14px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.react.on{background:var(--peri-soft);border-color:#B9C3F4;color:var(--indigo)}
+.react:active{transform:scale(.92)}
+.react .e{font-size:16px}
+.cmt-toggle{margin-left:auto;height:34px;padding:0 10px;border-radius:10px;color:var(--ink-2);font-weight:700;font-size:13.5px;display:inline-flex;align-items:center;gap:5px}
+.cmts{margin-top:12px;border-top:1px dashed #DADDF0;padding-top:10px}
+.cmt{display:flex;gap:9px;padding:8px 0}
+.cmt .avatar{width:28px;height:28px;font-size:12px}
+.cmt .body{flex:1;min-width:0;background:#F3F4FB;border-radius:4px 14px 14px 14px;padding:8px 12px}
+.cmt .body b{font-size:13px}.cmt .body span{font-size:11.5px;color:var(--ink-3);margin-left:6px}
+.cmt .body p{margin:2px 0 0;font-size:14px;white-space:pre-wrap}
+.cmt .del{font-size:12px;color:var(--ink-3);padding:4px;align-self:flex-start}
+.cmt-form{display:flex;gap:8px;margin-top:8px}
+.cmt-form .input{height:44px;border-radius:12px}
+.cmt-form .btn{height:44px;flex:none}
+.empty{text-align:center;padding:40px 20px;color:var(--ink-3);font-weight:600}
+.empty .ic{font-size:40px;margin-bottom:6px}
+.counter{font-size:12.5px;color:var(--ink-3);text-align:right;margin-top:-8px}
+.action-list{display:grid;gap:8px}
+.action-list button{height:54px;border-radius:14px;background:#fff;font-weight:700;font-size:15.5px;border:1px solid var(--line)}
+.action-list .danger{color:var(--danger)}
+
+/* ---------- 섹션 3: 안내 ---------- */
+.info-grid{display:grid;gap:14px}
+.poster-card{position:relative;overflow:hidden;border-radius:24px;box-shadow:var(--shadow);cursor:zoom-in;aspect-ratio:4/5;background:var(--night)}
+.poster-card img{width:100%;height:100%;object-fit:cover;display:block}
+.poster-card .dd{position:absolute;left:14px;top:14px;background:rgba(20,22,58,.82);backdrop-filter:blur(6px);color:#fff;border-radius:14px;padding:10px 14px}
+.poster-card .dd b{font-family:var(--display);font-size:28px;font-weight:400;letter-spacing:.6px;display:block;line-height:1}
+.poster-card .dd span{font-size:12px;opacity:.85;font-weight:600}
+.theme-card{padding:20px}
+.theme-card .eyebrow{font-size:12px;font-weight:800;color:var(--peri);letter-spacing:1.5px}
+.theme-card .tt{font-family:var(--display);font-size:clamp(34px,10vw,46px);color:var(--indigo);line-height:1;margin:8px 0 6px;letter-spacing:.4px}
+.theme-card .ko{color:var(--peri);font-weight:800;font-size:17px}
+.info-list{padding:6px 18px}
+.info-row{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.info-row:last-child{border-bottom:0}
+.info-row dt{font-size:13.5px;color:var(--ink-3);font-weight:700}
+.info-row dd{margin:0;font-weight:700;font-size:15px}
+.info-row.hl dd{color:var(--indigo)}
+.link-btn{height:58px;font-size:16.5px;border-radius:18px;text-decoration:none}
+.notice{padding:16px 18px}
+.notice h4{margin:0 0 4px;font-size:15.5px;display:flex;gap:6px;align-items:center}
+.notice p{margin:0;color:var(--ink-2);font-size:14px;white-space:pre-wrap}
+.notice time{font-size:12px;color:var(--ink-3)}
+
+/* ---------- 반응형: 태블릿 / PC ---------- */
+@media (min-width:640px){
+  main{padding-left:24px;padding-right:24px}
+  .topbar{padding-left:24px;padding-right:24px}
+  .sheet-wrap{align-items:center;padding:24px}
+  .sheet{border-radius:26px;max-height:88dvh;transform:translateY(30px) scale(.97);opacity:0;transition:transform .3s,opacity .25s}
+  .sheet-wrap.on .sheet{transform:none;opacity:1}
+  .sheet-grip{display:none}
+  .sheet-head{padding-top:20px}
+  .sheet-foot{border-radius:0 0 26px 26px}
+  .feed{grid-template-columns:1fr 1fr}
+}
+@media (min-width:900px){
+  .journey{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);align-items:start;gap:20px}
+  #jHero{order:0}
+  .journey .j-left{position:sticky;top:80px}
+  .journey .puzzle-frame{max-width:calc((100dvh - 250px) * .8);margin:0 auto}
+  .journey .j-right{display:grid;gap:14px}
+  .info-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start;gap:20px}
+  .info-grid .poster-card{position:sticky;top:80px}
+  .info-grid .info-right{display:grid;gap:14px}
+  .topbar .logo b{font-size:26px}
+}
+@media (min-width:1100px){ .feed{grid-template-columns:1fr 1fr 1fr} }
+@media (max-width:360px){ .react .lbl{display:none} .nav button{font-size:11px} }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="splash"><div><div class="logo">NO WAY?<br>GOD'S WAY!</div><div class="spinner dark"></div></div></div>
+
+<!-- ================= 로그인 / 회원가입 ================= -->
+<section id="auth" hidden>
+  <div class="bg"></div><div class="veil"></div>
+  <div class="brand">
+    <div class="t">NO WAY?<br>GOD'S WAY!</div>
+    <div class="s">길이 없는 곳에 길을 만드시는 하나님</div>
+    <div class="m">2026 CCC 경인금식수련회 · 30일 기도 여정</div>
+  </div>
+  <div class="card auth-card">
+    <div class="tabs" role="tablist">
+      <button id="tabLogin" class="on" role="tab">로그인</button>
+      <button id="tabSignup" role="tab">회원가입</button>
+    </div>
+
+    <form id="loginForm" novalidate autocomplete="on">
+      <div class="form-err" id="loginErr" hidden></div>
+      <div class="field">
+        <label for="li-id">아이디</label>
+        <input class="input" id="li-id" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="아이디를 입력하세요">
+      </div>
+      <div class="field">
+        <label for="li-pw">비밀번호</label>
+        <div class="input-wrap">
+          <input class="input" id="li-pw" name="password" type="password" autocomplete="current-password" placeholder="비밀번호를 입력하세요">
+          <button type="button" class="eye" data-eye="li-pw" aria-label="비밀번호 보기"></button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="loginBtn" type="submit">로그인</button>
+      <div class="auth-links">
+        <button type="button" id="findIdBtn">아이디 찾기</button>·
+        <button type="button" id="findPwBtn">비밀번호 찾기</button>
+      </div>
+      <div class="auth-links" style="margin-top:4px">처음이신가요? <button type="button" id="goSignup" style="color:var(--indigo);font-weight:800">회원가입</button></div>
+    </form>
+
+    <form id="signupForm" novalidate autocomplete="on" hidden>
+      <div class="form-err" id="signupErr" hidden></div>
+      <div class="field">
+        <label for="su-id">아이디</label>
+        <input class="input" id="su-id" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="영문 소문자·숫자·_ 4~20자" maxlength="20">
+        <div class="hint" id="h-id"></div>
+      </div>
+      <div class="field">
+        <label for="su-pw">비밀번호</label>
+        <div class="input-wrap">
+          <input class="input" id="su-pw" type="password" autocomplete="new-password" placeholder="6자 이상" maxlength="72">
+          <button type="button" class="eye" data-eye="su-pw" aria-label="비밀번호 보기"></button>
+        </div>
+        <div class="hint" id="h-pw"></div>
+      </div>
+      <div class="field">
+        <label for="su-pw2">비밀번호 확인</label>
+        <input class="input" id="su-pw2" type="password" autocomplete="new-password" placeholder="비밀번호를 한 번 더 입력하세요" maxlength="72">
+        <div class="hint" id="h-pw2"></div>
+      </div>
+      <div class="field">
+        <label for="su-name">이름</label>
+        <input class="input" id="su-name" autocomplete="name" placeholder="실명을 입력하세요" maxlength="20">
+        <div class="hint" id="h-name"></div>
+      </div>
+      <div class="field">
+        <label id="lbl-campus">캠퍼스</label>
+        <div id="campusPickerSlot"></div>
+        <input type="hidden" id="su-campus">
+      </div>
+      <div class="field">
+        <label for="su-sid">학번</label>
+        <input class="input" id="su-sid" inputmode="numeric" autocomplete="off" placeholder="예) 20241234" maxlength="15">
+        <div class="hint" id="h-sid">학교 학번 전체를 입력해 주세요. 캠퍼스+학번으로 본인을 확인해요.</div>
+      </div>
+      <button class="btn btn-primary btn-block" id="signupBtn" type="submit">가입하고 시작하기</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= 앱 ================= -->
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="logo"><b>NO WAY? GOD'S WAY!</b><span>2026 CCC 경인금식수련회</span></div>
+    <button class="me-btn" id="meBtn"><span id="meName"></span><span class="avatar" id="meAvatar"></span></button>
+  </header>
+
+  <main>
+    <!-- 섹션 1 -->
+    <section class="section" id="sec-journey">
+      <div class="journey">
+        <div class="j-left">
+          <div id="previewBanner" class="preview-banner" hidden style="margin-bottom:12px"></div>
+          <div class="puzzle-frame" id="puzzleFrame">
+            <svg id="puzzle" viewBox="-6 -6 1012 1262" preserveAspectRatio="xMidYMid meet" role="img" aria-label="30조각 기도 퍼즐"></svg>
+          </div>
+          <div class="legend" style="margin-top:10px">
+            <span><i style="background:#FFC95C;box-shadow:0 0 8px #FFC95C"></i>오늘의 조각</span>
+            <span><i style="background:url(assets/poster-tiny.webp) center/cover"></i>완성</span>
+            <span><i style="border:2px dashed #E3B860"></i>놓친 날</span>
+            <span><i style="background:#3A3C64"></i>예정</span>
+          </div>
+        </div>
+        <div class="j-right">
+          <div class="card j-hero" id="jHero"></div>
+          <div class="card today-card" id="todayCard"></div>
+          <div class="card admin-card" id="adminCard" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 2 -->
+    <section class="section" id="sec-prayers">
+      <button class="btn btn-primary add-btn" id="addPrayerBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        기도제목 추가
+      </button>
+      <div class="seg" id="scopeSeg">
+        <button data-scope="me" class="on">개인<small>내 기도제목</small></button>
+        <button data-scope="campus">캠퍼스<small id="campusLabel">우리 캠퍼스</small></button>
+        <button data-scope="all">지구<small>경인·인천 전체</small></button>
+      </div>
+      <div class="feed" id="feed"></div>
+      <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost btn-sm" id="moreBtn" hidden>더 보기</button></div>
+    </section>
+
+    <!-- 섹션 3 -->
+    <section class="section" id="sec-info">
+      <div class="info-grid">
+        <div class="poster-card" id="posterCard">
+          <img src="assets/poster.webp" alt="2026 CCC 경인금식수련회 포스터" loading="lazy">
+          <div class="dd"><b id="infoDday">D-</b><span>수련회까지</span></div>
+        </div>
+        <div class="info-right">
+          <div class="card theme-card">
+            <div class="eyebrow">2026 CCC 경인금식수련회</div>
+            <div class="tt">NO WAY? GOD'S WAY!</div>
+            <div class="ko">길이 없는 곳에 길을 만드시는 하나님</div>
+          </div>
+          <dl class="card info-list" id="infoList" style="margin:0"></dl>
+          <div id="infoLinks" style="display:grid;gap:10px"></div>
+          <div id="notices" style="display:grid;gap:10px"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" id="nav" aria-label="섹션 이동">
+    <button data-go="journey" class="on" aria-label="기도 여정">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h6v2.2a1.8 1.8 0 1 0 3.6 0V4H20v6h-2.2a1.8 1.8 0 1 0 0 3.6H20V20h-6.4v-2.2a1.8 1.8 0 1 0-3.6 0V20H4v-6.4h2.2a1.8 1.8 0 1 0 0-3.6H4z"/></svg>
+      기도 여정
+    </button>
+    <button data-go="prayers" aria-label="기도제목">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.3-9.4C1.4 8 3.6 4.5 7.2 4.5c2 0 3.6 1.1 4.8 2.8 1.2-1.7 2.8-2.8 4.8-2.8 3.6 0 5.8 3.5 4.5 7.1C19.5 16.4 12 21 12 21z"/></svg>
+      기도제목
+    </button>
+    <button data-go="info" aria-label="수련회 안내">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
+      안내
+    </button>
+  </nav>
+</div>
+
+<!-- 시트 / 토스트 -->
+<div class="sheet-wrap" id="sheetWrap" aria-hidden="true">
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <div class="sheet" role="dialog" aria-modal="true" id="sheet">
+    <div class="sheet-grip" id="sheetGrip"><i></i></div>
+    <div id="sheetInner" style="display:flex;flex-direction:column;min-height:0;flex:1"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   설정
+   ========================================================= */
+const SUPABASE_URL = 'https://dqsnpfqbobznqprxparn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_2qD96lsaApyZ1D-LaMMjsA_oV_CX9bA';
+const EMAIL_DOMAIN = 'users.gyeongin-prayer.app';
+const RETREAT_START = '2026-12-28';
+const JOURNEY_START = '2026-11-28';
+const TOPIC_BUCKET = 'prayer-topics';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, storageKey: 'gyeongin-prayer-auth' }
+});
+
+/* =========================================================
+   유틸
+   ========================================================= */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+function h(tag, attrs = {}, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'html') el.innerHTML = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+  return el;
+}
+const params = new URLSearchParams(location.search);
+const PREVIEW = /^\d{4}-\d{2}-\d{2}$/.test(params.get('preview') || '') ? params.get('preview') : null;
+function kstToday() {
+  if (PREVIEW) return PREVIEW;
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+}
+const toUTC = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+const daysBetween = (a, b) => Math.round((toUTC(b) - toUTC(a)) / 864e5);
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+function fmtDate(s, withWd = true) {
+  const d = new Date(toUTC(s));
+  return `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일` + (withWd ? ` (${WD[d.getUTCDay()]})` : '');
+}
+const shortDate = s => { const d = new Date(toUTC(s)); return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`; };
+function timeAgo(iso) {
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return '방금';
+  if (s < 3600) return `${Math.floor(s / 60)}분 전`;
+  if (s < 86400) return `${Math.floor(s / 3600)}시간 전`;
+  if (s < 86400 * 7) return `${Math.floor(s / 86400)}일 전`;
+  const d = new Date(iso); return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+const AV_COLORS = ['#2F2A7E', '#6C7EE0', '#7A5FC9', '#3E6FB8', '#C0779C', '#3E9C78', '#C88A2E', '#4C4A49'];
+function avatar(name, cls = '') {
+  let n = 0; for (const c of name || '?') n = (n * 31 + c.charCodeAt(0)) >>> 0;
+  return h('span', { class: 'avatar ' + cls, style: `background:${AV_COLORS[n % AV_COLORS.length]}` }, (name || '?').slice(0, 1));
+}
+let toastTimer;
+function toast(msg, ms = 2400) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), ms);
+}
+function dialog({ title, message, ok = '확인', cancel = null, danger = false }) {
+  return new Promise(res => {
+    const close = v => { wrap.remove(); res(v); };
+    const wrap = h('div', { class: 'dlg-wrap', onclick: e => { if (e.target === wrap && cancel) close(false); } },
+      h('div', { class: 'dlg', role: 'alertdialog' },
+        title && h('h4', {}, title), message && h('p', {}, message),
+        h('div', { class: 'acts' },
+          cancel && h('button', { class: 'btn btn-soft', onclick: () => close(false) }, cancel),
+          h('button', { class: 'btn btn-primary', style: danger ? 'background:var(--danger)' : '', onclick: () => close(true) }, ok))));
+    document.body.append(wrap);
+    $('.acts .btn-primary', wrap).focus();
+  });
+}
+function viewer(src, alt = '') {
+  const v = h('div', { class: 'viewer', onclick: e => { if (e.target === v || e.target.closest('.x-btn')) v.remove(); } },
+    h('img', { src, alt }),
+    h('button', { class: 'x-btn', 'aria-label': '닫기', html: ICON.x }));
+  document.body.append(v);
+}
+const ICON = {
+  x: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  eye: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeOff: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.7 0 3.2-.5 4.5-1.2M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+  more: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>',
+  chat: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  img: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-4 4 3 3-2 6 4"/></svg>',
+  check: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+};
+function setBusy(btn, busy, label) {
+  if (busy) { btn.dataset.label = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true; }
+  else { btn.innerHTML = label || btn.dataset.label || btn.innerHTML; btn.disabled = false; }
+}
+
+/* =========================================================
+   바텀 시트 (안드로이드 뒤로가기·스와이프로 닫기 지원)
+   ========================================================= */
+const Sheet = {
+  open: false, onClose: null,
+  show({ title, sub, body, foot, onClose }) {
+    const inner = $('#sheetInner'); inner.innerHTML = '';
+    const head = h('div', { class: 'sheet-head' },
+      h('div', {}, h('h3', {}, title || ''), sub ? h('div', { class: 'sub' }, sub) : null),
+      h('button', { class: 'x-btn', 'aria-label': '닫기', html: ICON.x, onclick: () => Sheet.close() }));
+    inner.append(head, h('div', { class: 'sheet-body' }, body));
+    if (foot) inner.append(h('div', { class: 'sheet-foot' }, foot));
+    this.onClose = onClose || null;
+    const wrap = $('#sheetWrap'); wrap.classList.add('on'); wrap.setAttribute('aria-hidden', 'false');
+    $('#sheet').style.transform = '';
+    document.body.style.overflow = 'hidden';
+    if (!this.open) { history.pushState({ sheet: 1 }, ''); }
+    this.open = true;
+    attachDrag(head);
+  },
+  close(fromPop = false) {
+    if (!this.open) return Promise.resolve();
+    this.open = false;
+    const wrap = $('#sheetWrap'); wrap.classList.remove('on'); wrap.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    const cb = this.onClose; this.onClose = null; cb && cb();
+    if (!fromPop && history.state && history.state.sheet) {
+      // 뒤로가기 기록을 정리한 뒤(popstate) 다음 동작을 이어감
+      return new Promise(res => {
+        const done = () => { window.removeEventListener('popstate', done); clearTimeout(t); res(); };
+        const t = setTimeout(done, 400);
+        window.addEventListener('popstate', done);
+        history.back();
+      });
+    }
+    return Promise.resolve();
+  }
+};
+$('#sheetBackdrop').addEventListener('click', () => Sheet.close());
+window.addEventListener('popstate', () => { if (Sheet.open) Sheet.close(true); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && Sheet.open && !$('.dlg-wrap')) Sheet.close(); });
+function attachDrag(head) {
+  if (window.matchMedia('(min-width:640px)').matches) return;
+  const sheet = $('#sheet');
+  [head, $('#sheetGrip')].forEach(zone => {
+    let y0 = null, dy = 0;
+    zone.ontouchstart = e => { y0 = e.touches[0].clientY; dy = 0; sheet.style.transition = 'none'; };
+    zone.ontouchmove = e => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); sheet.style.transform = `translateY(${dy}px)`; };
+    zone.ontouchend = () => { sheet.style.transition = ''; if (dy > 110) Sheet.close(); else sheet.style.transform = ''; y0 = null; };
+  });
+}
+
+/* =========================================================
+   상태
+   ========================================================= */
+const S = {
+  me: null,             // {id, username, name, campus, student_id, is_admin}
+  days: [],             // prayer_days
+  logs: new Set(),      // "day:region"
+  stats: {},            // day -> count
+  section: 'journey',
+  scope: 'me', feedPage: 0, feedDone: false, feedLoading: false,
+  infoLoaded: false,
+};
+const PAGE = 20;
+
+/* =========================================================
+   인증
+   ========================================================= */
+const toEmail = id => `${id.trim().toLowerCase()}@${EMAIL_DOMAIN}`;
+
+$$('[data-eye]').forEach(b => {
+  b.innerHTML = ICON.eye;
+  b.addEventListener('click', () => {
+    const inp = document.getElementById(b.dataset.eye);
+    const show = inp.type === 'password'; inp.type = show ? 'text' : 'password';
+    b.innerHTML = show ? ICON.eyeOff : ICON.eye;
+  });
+});
+function switchAuth(tab) {
+  $('#tabLogin').classList.toggle('on', tab === 'login');
+  $('#tabSignup').classList.toggle('on', tab === 'signup');
+  $('#loginForm').hidden = tab !== 'login';
+  $('#signupForm').hidden = tab !== 'signup';
+  if (tab === 'signup' && !$('#campusPickerSlot').firstChild) {
+    const pk = campusPicker(v => { $('#su-campus').value = v; });
+    pk.el.id = 'campusPicker';
+    $('#campusPickerSlot').append(pk.el);
+  }
+}
+$('#tabLogin').onclick = () => switchAuth('login');
+$('#tabSignup').onclick = () => switchAuth('signup');
+$('#goSignup').onclick = () => switchAuth('signup');
+
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = $('#li-id').value.trim(), pw = $('#li-pw').value;
+  const err = $('#loginErr'); err.hidden = true;
+  if (!id || !pw) { err.textContent = '아이디와 비밀번호를 입력해 주세요.'; err.hidden = false; return; }
+  const btn = $('#loginBtn'); setBusy(btn, true);
+  const { error } = await sb.auth.signInWithPassword({ email: toEmail(id), password: pw });
+  setBusy(btn, false, '로그인');
+  if (error) {
+    err.textContent = /invalid/i.test(error.message) ? '아이디 또는 비밀번호가 올바르지 않습니다.' : '로그인 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요.';
+    err.hidden = false; return;
+  }
+  await enterApp();
+});
+
+/* 회원가입 실시간 검사 */
+const reId = /^[a-z0-9_]{4,20}$/;
+let idCheckTimer, idAvailable = null;
+$('#su-id').addEventListener('input', e => {
+  const v = e.target.value = e.target.value.toLowerCase().replace(/\s/g, '');
+  const hint = $('#h-id'); idAvailable = null; clearTimeout(idCheckTimer);
+  if (!v) { hint.className = 'hint'; hint.textContent = ''; return; }
+  if (!reId.test(v)) { hint.className = 'hint err'; hint.textContent = '영문 소문자·숫자·밑줄(_)로 4~20자'; return; }
+  hint.className = 'hint'; hint.textContent = '확인 중…';
+  idCheckTimer = setTimeout(async () => {
+    const { data, error } = await sb.rpc('is_username_available', { p_username: v });
+    if ($('#su-id').value !== v) return;
+    if (error) { hint.textContent = ''; return; }
+    idAvailable = !!data;
+    hint.className = 'hint ' + (data ? 'ok' : 'err');
+    hint.textContent = data ? '✓ 사용할 수 있는 아이디예요' : '이미 사용 중인 아이디예요';
+  }, 350);
+});
+$('#su-pw').addEventListener('input', () => {
+  const v = $('#su-pw').value, hint = $('#h-pw');
+  hint.className = 'hint ' + (v.length >= 6 ? 'ok' : v ? 'err' : '');
+  hint.textContent = v ? (v.length >= 6 ? '✓ 사용 가능' : `${6 - v.length}자 더 입력해 주세요`) : '';
+  checkPw2();
+});
+function checkPw2() {
+  const a = $('#su-pw').value, b = $('#su-pw2').value, hint = $('#h-pw2');
+  if (!b) { hint.textContent = ''; return; }
+  hint.className = 'hint ' + (a === b ? 'ok' : 'err');
+  hint.textContent = a === b ? '✓ 비밀번호가 일치해요' : '비밀번호가 일치하지 않아요';
+}
+$('#su-pw2').addEventListener('input', checkPw2);
+$('#su-sid').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9A-Za-z-]/g, ''); });
+
+// 캠퍼스 목록 (DB의 campuses 표에서 불러오고, 실패하면 기본 목록 사용)
+const DEFAULT_CAMPUSES = ['인하대', '인천대', '가천대 메디컬캠퍼스', '청운/재능대', '인하공전', '경인여대', '경인교대'];
+let CAMPUSES = null;
+async function loadCampuses() {
+  if (CAMPUSES) return CAMPUSES;
+  const { data } = await sb.from('campuses').select('name').order('sort_order');
+  CAMPUSES = data && data.length ? data.map(r => r.name) : DEFAULT_CAMPUSES;
+  return CAMPUSES;
+}
+// "캠퍼스를 선택해주세요"를 누르면 아래로 목록이 펼쳐지고 스크롤해서 고르는 선택 상자
+function campusPicker(onChange) {
+  let value = '';
+  const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  const btn = h('button', { type: 'button', class: 'picker-btn', 'aria-haspopup': 'listbox', 'aria-expanded': 'false' });
+  const list = h('div', { class: 'picker-list', role: 'listbox' });
+  const el = h('div', { class: 'picker' }, btn, list);
+  const paintBtn = () => { btn.innerHTML = (value ? `<span class="val"></span>` : '<span class="ph">캠퍼스를 선택해주세요</span>') + chev; if (value) $('.val', btn).textContent = value; };
+  const paintList = () => {
+    list.innerHTML = '';
+    (CAMPUSES || DEFAULT_CAMPUSES).forEach(c => list.append(h('button', {
+      type: 'button', class: 'picker-opt' + (c === value ? ' on' : ''), role: 'option', 'aria-selected': c === value ? 'true' : 'false',
+      onclick: () => { value = c; el.classList.remove('err'); close(); paintBtn(); onChange && onChange(c); }
+    }, c, c === value ? h('span', { html: ICON.check }) : null)));
+  };
+  const open = async () => {
+    await loadCampuses(); paintList();
+    el.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
+    const cur = $('.picker-opt.on', list); if (cur) cur.scrollIntoView({ block: 'nearest' });
+    setTimeout(() => list.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  };
+  const close = () => { el.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); };
+  btn.onclick = () => el.classList.contains('open') ? close() : open();
+  document.addEventListener('click', e => { if (!el.contains(e.target)) close(); });
+  paintBtn(); loadCampuses();
+  return { el, get value() { return value; } };
+}
+
+$('#signupForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = {
+    username: $('#su-id').value.trim().toLowerCase(), password: $('#su-pw').value, pw2: $('#su-pw2').value,
+    name: $('#su-name').value.trim(), campus: $('#su-campus').value.trim().replace(/\s+/g, ' '), student_id: $('#su-sid').value.trim()
+  };
+  const err = $('#signupErr'); err.hidden = true;
+  $$('#signupForm .input, #campusPicker').forEach(i => i.classList.remove('err'));
+  const fail = (sel, msg) => {
+    const el = sel === '#su-campus' ? $('#campusPicker') : $(sel);
+    el.classList.add('err'); if (el.focus && sel !== '#su-campus') el.focus();
+    err.textContent = msg; err.hidden = false; err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  if (!reId.test(v.username)) return fail('#su-id', '아이디는 영문 소문자·숫자·밑줄(_) 4~20자로 입력해 주세요.');
+  if (idAvailable === false) return fail('#su-id', '이미 사용 중인 아이디예요.');
+  if (v.password.length < 6) return fail('#su-pw', '비밀번호는 6자 이상이어야 해요.');
+  if (v.password !== v.pw2) return fail('#su-pw2', '비밀번호가 일치하지 않아요.');
+  if (!v.name) return fail('#su-name', '이름을 입력해 주세요.');
+  if (!v.campus) return fail('#su-campus', '캠퍼스를 선택해 주세요.');
+  if (!/^[0-9A-Za-z-]{4,15}$/.test(v.student_id)) return fail('#su-sid', '학번을 정확히 입력해 주세요. (예: 20241234)');
+
+  const btn = $('#signupBtn'); setBusy(btn, true);
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/signup`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY },
+      body: JSON.stringify({ username: v.username, password: v.password, name: v.name, campus: v.campus, student_id: v.student_id })
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const map = { username: '#su-id', password: '#su-pw', name: '#su-name', campus: '#su-campus', student_id: '#su-sid' };
+      setBusy(btn, false, '가입하고 시작하기');
+      return fail(map[out.field] || '#su-id', out.error || '가입 중 오류가 발생했어요.');
+    }
+    const { error } = await sb.auth.signInWithPassword({ email: toEmail(v.username), password: v.password });
+    setBusy(btn, false, '가입하고 시작하기');
+    if (error) { switchAuth('login'); $('#li-id').value = v.username; toast('가입이 완료됐어요. 로그인해 주세요.'); return; }
+    await enterApp(true);
+  } catch (ex) {
+    setBusy(btn, false, '가입하고 시작하기');
+    err.textContent = '네트워크 오류가 발생했어요. 연결을 확인해 주세요.'; err.hidden = false;
+  }
+});
+
+/* 아이디 찾기 / 비밀번호 찾기 */
+$('#findIdBtn').onclick = () => {
+  const name = h('input', { class: 'input', placeholder: '이름', maxlength: 20 });
+  const campus = campusPicker();
+  const sid = h('input', { class: 'input', placeholder: '학번', inputmode: 'numeric', maxlength: 15 });
+  const out = h('div', { class: 'hint', style: 'font-size:14px;margin-top:4px' });
+  const go = h('button', { class: 'btn btn-primary' }, '아이디 찾기');
+  go.onclick = async () => {
+    if (!name.value.trim() || !campus.value || !sid.value.trim()) { out.className = 'hint err'; out.textContent = '모든 항목을 입력해 주세요.'; return; }
+    setBusy(go, true);
+    const { data } = await sb.rpc('find_username', { p_name: name.value, p_campus: campus.value, p_student_id: sid.value });
+    setBusy(go, false, '아이디 찾기');
+    if (data) { out.className = 'hint ok'; out.innerHTML = `가입된 아이디는 <b style="font-size:17px">${data}</b> 입니다.`; }
+    else { out.className = 'hint err'; out.textContent = '일치하는 회원 정보가 없어요. 입력한 내용을 다시 확인해 주세요.'; }
+  };
+  Sheet.show({
+    title: '아이디 찾기', sub: '가입할 때 입력한 정보로 찾을 수 있어요',
+    body: h('div', {}, h('div', { class: 'field' }, name), h('div', { class: 'field' }, campus.el), h('div', { class: 'field' }, sid), out),
+    foot: go
+  });
+};
+$('#findPwBtn').onclick = () => dialog({
+  title: '비밀번호를 잊으셨나요?',
+  message: '비밀번호는 경인지구 대표단에게 아이디를 알려주시면\n임시 비밀번호로 초기화해 드려요.\n\n로그인 후 [내 정보]에서 새 비밀번호로 바꿔 주세요.'
+});
+
+async function enterApp(isNew = false) {
+  const { data, error } = await sb.rpc('my_profile');
+  if (error || !data || !data.length) {
+    await sb.auth.signOut();
+    showAuth(); toast('회원 정보를 불러오지 못했어요. 다시 로그인해 주세요.'); return;
+  }
+  S.me = data[0];
+  $('#auth').hidden = true; $('#app').hidden = false; $('#splash').hidden = true;
+  $('#meName').textContent = S.me.name;
+  $('#meAvatar').replaceWith(Object.assign(avatar(S.me.name), { id: 'meAvatar' }));
+  $('#campusLabel').textContent = S.me.campus;
+  if (isNew) toast(`${S.me.name}님, 환영합니다! 🙏`);
+  route();
+}
+function showAuth() {
+  $('#splash').hidden = true; $('#app').hidden = true; $('#auth').hidden = false;
+}
+
+/* 내 정보 */
+$('#meBtn').onclick = () => {
+  const me = S.me;
+  const pw1 = h('input', { class: 'input', type: 'password', placeholder: '새 비밀번호 (6자 이상)', autocomplete: 'new-password' });
+  const pw2 = h('input', { class: 'input', type: 'password', placeholder: '새 비밀번호 확인', autocomplete: 'new-password' });
+  const pwBtn = h('button', { class: 'btn btn-soft btn-block' }, '비밀번호 변경');
+  pwBtn.onclick = async () => {
+    if (pw1.value.length < 6) return toast('비밀번호는 6자 이상이어야 해요');
+    if (pw1.value !== pw2.value) return toast('비밀번호가 일치하지 않아요');
+    setBusy(pwBtn, true);
+    const { error } = await sb.auth.updateUser({ password: pw1.value });
+    setBusy(pwBtn, false, '비밀번호 변경');
+    if (error) return toast(/different|same/i.test(error.message) ? '이전과 다른 비밀번호를 입력해 주세요' : '변경하지 못했어요. 다시 시도해 주세요');
+    pw1.value = pw2.value = ''; toast('비밀번호가 변경되었어요');
+  };
+  const row = (k, v) => h('div', { class: 'info-row' }, h('dt', {}, k), h('dd', {}, v));
+  const body = h('div', {},
+    h('div', { style: 'display:flex;align-items:center;gap:12px;margin-bottom:10px' }, avatar(me.name), h('div', {}, h('b', { style: 'font-size:17px' }, me.name), h('div', { class: 'hint' }, `@${me.username}`))),
+    h('dl', { class: 'card info-list', style: 'margin:0 0 18px' }, row('캠퍼스', me.campus), row('학번', me.student_id), row('아이디', me.username)),
+    h('div', { class: 'field' }, h('label', {}, '비밀번호 변경'), pw1), h('div', { class: 'field' }, pw2), pwBtn,
+    me.is_admin ? adminTools() : null,
+    h('div', { class: 'card', style: 'padding:14px 16px;margin-top:18px;font-size:13.5px;color:var(--ink-2)' },
+      h('b', { style: 'color:var(--ink)' }, '📱 홈 화면에 추가하기'), h('br'),
+      '아이폰: 사파리 공유 버튼 → "홈 화면에 추가"', h('br'), '안드로이드: 크롬 메뉴(⋮) → "홈 화면에 추가"')
+  );
+  const out = h('button', { class: 'btn btn-ghost', style: 'color:var(--danger)' }, '로그아웃');
+  out.onclick = async () => {
+    if (!(await dialog({ title: '로그아웃할까요?', ok: '로그아웃', cancel: '취소', danger: true }))) return;
+    await Sheet.close(); await sb.auth.signOut(); location.reload();
+  };
+  Sheet.show({ title: '내 정보', body, foot: out });
+};
+function adminTools() {
+  const uid = h('input', { class: 'input', placeholder: '초기화할 회원의 아이디', autocapitalize: 'none' });
+  const btn = h('button', { class: 'btn btn-primary btn-sm', style: 'height:50px' }, '초기화');
+  const out = h('div', { class: 'hint', style: 'font-size:14px' });
+  btn.onclick = async () => {
+    if (!uid.value.trim()) return;
+    if (!(await dialog({ title: '비밀번호 초기화', message: `@${uid.value.trim()} 회원의 비밀번호를 임시 비밀번호로 바꿀까요?`, ok: '초기화', cancel: '취소' }))) return;
+    setBusy(btn, true);
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/admin-reset-password`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ username: uid.value })
+    });
+    const j = await res.json().catch(() => ({}));
+    setBusy(btn, false, '초기화');
+    if (!res.ok) { out.className = 'hint err'; out.textContent = j.error || '실패했어요'; return; }
+    out.className = 'hint ok'; out.innerHTML = `${j.name}(${j.campus}) 님의 임시 비밀번호: <b style="font-size:17px;letter-spacing:1px">${j.temp_password}</b>`;
+  };
+  return h('div', { style: 'margin-top:22px' }, h('label', { style: 'font-size:13px;font-weight:800;color:var(--indigo)' }, '🔑 관리자 · 회원 비밀번호 초기화'),
+    h('div', { class: 'input-wrap', style: 'margin-top:6px' }, uid, btn), out);
+}
+
+/* =========================================================
+   라우팅 (하단 플로팅 버튼)
+   ========================================================= */
+const SECTIONS = ['journey', 'prayers', 'info'];
+function go(sec) {
+  if (!SECTIONS.includes(sec)) sec = 'journey';
+  S.section = sec;
+  $$('.section').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
+  $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
+  history.replaceState(history.state, '', location.pathname + location.search + '#' + sec);
+  window.scrollTo(0, 0);
+  if (sec === 'journey') loadJourney();
+  if (sec === 'prayers') loadFeed(true);
+  if (sec === 'info') loadInfo();
+}
+function route() { go((location.hash || '#journey').slice(1)); }
+$$('#nav button').forEach(b => b.addEventListener('click', async () => { if (Sheet.open) await Sheet.close(); go(b.dataset.go); }));
+
+/* =========================================================
+   섹션 1: 30일 기도 여정 퍼즐
+   ========================================================= */
+const COLS = 5, ROWS = 6, PW = 200, PH = 1250 / 6;
+const NS = 'http://www.w3.org/2000/svg';
+const svgEl = (tag, attrs = {}) => { const el = document.createElementNS(NS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); return el; };
+function mulberry(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// 퍼즐 모양(고정 시드) 생성
+const PUZ = (() => {
+  const R = mulberry(20261228);
+  const TAB = [[0, 0], [.34, 0], [.40, .02], [.38, .08], [.34, .17], [.40, .235], [.50, .235], [.60, .235], [.66, .17], [.62, .08], [.60, .02], [.66, 0], [1, 0]];
+  function canon(ax, ay, len, horiz, sign) {
+    const shift = (R() - .5) * .12, sc = .88 + R() * .2;
+    const pts = TAB.map(([u, v], i) => {
+      const uu = (i === 0 || i === 12) ? u : u + shift, vv = v * sc;
+      return horiz ? [ax + uu * len, ay + sign * vv * len] : [ax + sign * vv * len, ay + uu * len];
+    });
+    const segs = []; for (let i = 0; i < 12; i += 3) segs.push([pts[i], pts[i + 1], pts[i + 2], pts[i + 3]]);
+    return segs;
+  }
+  const rev = segs => segs.slice().reverse().map(([a, b, c, d]) => [d, c, b, a]);
+  const line = (a, b) => [[a, a, b, b]];
+  const H = [], V = [];
+  for (let r = 0; r < ROWS - 1; r++) { H[r] = []; for (let c = 0; c < COLS; c++) H[r][c] = canon(c * PW, (r + 1) * PH, PW, true, R() < .5 ? 1 : -1); }
+  for (let r = 0; r < ROWS; r++) { V[r] = []; for (let c = 0; c < COLS - 1; c++) V[r][c] = canon((c + 1) * PW, r * PH, PH, false, R() < .5 ? 1 : -1); }
+  const pieces = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const x0 = c * PW, x1 = x0 + PW, y0 = r * PH, y1 = y0 + PH;
+    const top = r === 0 ? line([x0, y0], [x1, y0]) : H[r - 1][c];
+    const right = c === COLS - 1 ? line([x1, y0], [x1, y1]) : V[r][c];
+    const bottom = r === ROWS - 1 ? line([x1, y1], [x0, y1]) : rev(H[r][c]);
+    const left = c === 0 ? line([x0, y1], [x0, y0]) : rev(V[r][c - 1]);
+    const all = [...top, ...right, ...bottom, ...left];
+    const f = p => p.map(n => n.toFixed(1)).join(' ');
+    const d = `M${f(all[0][0])}` + all.map(s => `C${f(s[1])} ${f(s[2])} ${f(s[3])}`).join('') + 'Z';
+    pieces.push({ r, c, d, cx: x0 + PW / 2, cy: y0 + PH / 2 });
+  }
+  // 날짜 → 조각 순서 (포스터가 고르게 드러나도록 섞고, 마지막 날은 걸어가는 사람 조각)
+  const order = [...Array(30).keys()];
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  const MAN = 4 * COLS + 2, k = order.indexOf(MAN); [order[k], order[29]] = [order[29], order[k]];
+  return { pieces, order }; // order[day-1] = piece index
+})();
+
+const dayInfo = d => S.days.find(x => x.day === d);
+const isDone = d => S.logs.has(d + ':gyeongin') && S.logs.has(d + ':incheon');
+function dayStatus(d) {
+  const info = dayInfo(d); if (!info) return 'locked';
+  const today = kstToday();
+  if (isDone(d)) return 'done';
+  if (info.pray_date > today) return 'locked';
+  if (info.pray_date === today) return 'today';
+  return S.logs.has(d + ':gyeongin') || S.logs.has(d + ':incheon') ? 'partial' : 'missed';
+}
+const todayDay = () => { const t = kstToday(); const x = S.days.find(d => d.pray_date === t); return x ? x.day : null; };
+
+let journeyLoaded = false;
+async function loadJourney() {
+  if (!journeyLoaded) renderPuzzle(); // 첫 진입 시 빈 퍼즐 먼저
+  const [daysRes, logsRes, statsRes] = await Promise.all([
+    S.days.length ? { data: S.days } : sb.from('prayer_days').select('day,pray_date,gyeongin_image,incheon_image,memo').order('day'),
+    sb.from('prayer_logs').select('day,region'),
+    sb.rpc('prayer_day_stats'),
+  ]);
+  if (daysRes.data) S.days = daysRes.data;
+  if (!PREVIEW || !journeyLoaded) {
+    S.logs = new Set((logsRes.data || []).map(l => `${l.day}:${l.region}`));
+    if (PREVIEW) loadPreviewLogs();
+  }
+  S.stats = Object.fromEntries((statsRes.data || []).map(s => [s.day, Number(s.prayed_count)]));
+  journeyLoaded = true;
+  renderPuzzle(); renderJourneyCards();
+}
+
+function renderPuzzle(snapDay = null) {
+  const svg = $('#puzzle'); svg.innerHTML = '';
+  const defs = svgEl('defs');
+  defs.innerHTML = `
+    <filter id="bgBlur" x="0" y="0" width="100%" height="100%"><feGaussianBlur stdDeviation="9" edgeMode="duplicate"/><feColorMatrix type="saturate" values="0.7"/></filter>
+    <filter id="glowF" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="pieceShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0b0c25" flood-opacity=".45"/></filter>
+    <linearGradient id="veil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14163A" stop-opacity=".35"/><stop offset="1" stop-color="#14163A" stop-opacity=".55"/></linearGradient>
+    <clipPath id="frameClip"><rect x="0" y="0" width="1000" height="1250"/></clipPath>`;
+  PUZ.pieces.forEach((p, i) => { const cp = svgEl('clipPath', { id: 'cp' + i }); cp.append(svgEl('path', { d: p.d })); defs.append(cp); });
+  svg.append(defs);
+
+  // 흐린 배경 포스터
+  const bg = svgEl('g', { 'clip-path': 'url(#frameClip)' });
+  bg.append(svgEl('image', { href: 'assets/poster.webp', x: 0, y: 0, width: 1000, height: 1250, filter: 'url(#bgBlur)', opacity: .6, preserveAspectRatio: 'none' }));
+  bg.append(svgEl('rect', { x: 0, y: 0, width: 1000, height: 1250, fill: 'url(#veil)' }));
+  svg.append(bg);
+
+  const gOutline = svgEl('g'), gDone = svgEl('g'), gGlow = svgEl('g'), gHit = svgEl('g');
+  for (let day = 1; day <= 30; day++) {
+    const idx = PUZ.order[day - 1], p = PUZ.pieces[idx], st = dayStatus(day), info = dayInfo(day);
+    if (st === 'done') {
+      const g = svgEl('g', { class: 'pz-piece' + (snapDay === day ? ' snap' : ''), filter: 'url(#pieceShadow)' });
+      const inner = svgEl('g', { 'clip-path': `url(#cp${idx})` });
+      inner.append(svgEl('image', { href: 'assets/poster.webp', x: 0, y: 0, width: 1000, height: 1250, preserveAspectRatio: 'none' }));
+      g.append(inner, svgEl('path', { d: p.d, class: 'pz-done-edge' }));
+      gDone.append(g);
+    } else {
+      gOutline.append(svgEl('path', { d: p.d, class: 'pz-outline ' + (st === 'missed' ? 'missed' : st === 'partial' ? 'partial' : '') }));
+      const n = svgEl('text', { x: p.cx, y: p.cy + 10, class: 'pz-label n' + (st === 'locked' ? ' locked' : '') }); n.textContent = day;
+      const dl = svgEl('text', { x: p.cx, y: p.cy + 42, class: 'pz-label d' + (st === 'locked' ? ' locked' : '') }); dl.textContent = info ? shortDate(info.pray_date) : '';
+      gOutline.append(n, dl);
+      if (st === 'today') gGlow.append(svgEl('path', { d: p.d, class: 'pz-glow', filter: 'url(#glowF)' }));
+    }
+    const hit = svgEl('path', { d: p.d, class: 'pz-hit' + (st === 'locked' ? ' locked' : ''), 'data-day': day, role: 'button', 'aria-label': `${day}일차 ${info ? fmtDate(info.pray_date) : ''}` });
+    hit.addEventListener('click', () => onPieceClick(day));
+    gHit.append(hit);
+  }
+  // 오늘 조각은 맨 위로
+  svg.append(gOutline, gDone, gGlow, gHit);
+}
+
+function onPieceClick(day) {
+  const st = dayStatus(day), info = dayInfo(day);
+  if (!info) return;
+  if (st === 'locked' && !S.me.is_admin) return toast(`${fmtDate(info.pray_date)}에 열리는 조각이에요 🔒`);
+  openDay(day);
+}
+
+function topicUrl(path) { return path ? `${SUPABASE_URL}/storage/v1/object/public/${TOPIC_BUCKET}/${encodeURIComponent(path)}` : null; }
+function topicBlock(label, cls, path, done) {
+  const box = h('div', { class: 'topic-img' });
+  const ph = () => h('div', { class: 'topic-ph', html: `${ICON.img}<div>${label} 기도제목이<br>곧 올라올 예정이에요</div>` });
+  const url = topicUrl(path);
+  if (url) {
+    const img = h('img', { src: url, alt: `${label} 기도제목`, loading: 'lazy' });
+    img.onerror = () => img.replaceWith(ph());
+    img.onclick = () => viewer(url, `${label} 기도제목`);
+    box.append(img);
+  } else box.append(ph());
+  return h('div', { class: 'topic' },
+    h('div', { class: 'topic-h' }, h('span', { class: 'dot ' + cls }), `${label} 기도제목`, done ? h('span', { class: 'badge b-ok', style: 'margin-left:auto' }, '기도완료') : null),
+    box);
+}
+function openDay(day) {
+  const info = dayInfo(day);
+  const render = () => {
+    const gDone = S.logs.has(day + ':gyeongin'), iDone = S.logs.has(day + ':incheon');
+    const st = dayStatus(day);
+    const badge = st === 'done' ? h('span', { class: 'badge b-ok' }, '✓ 조각 완성')
+      : st === 'today' ? h('span', { class: 'badge b-gold' }, '오늘의 조각')
+      : st === 'locked' ? h('span', { class: 'badge b-peri' }, '🔑 관리자 테스트 · 아직 열리지 않은 날')
+      : h('span', { class: 'badge b-gray' }, '놓친 날 · 지금 기도해도 돼요');
+    const body = h('div', {},
+      h('div', { style: 'margin:-2px 0 14px' }, badge),
+      info.memo ? h('p', { style: 'margin:0 0 14px;color:var(--ink-2)' }, info.memo) : null,
+      topicBlock('경인지구', 'gi', info.gyeongin_image, gDone),
+      topicBlock('인천지구', 'ic', info.incheon_image, iDone),
+      h('p', { class: 'hint', style: 'text-align:center;margin:4px 0 0' }, '두 지구 모두 기도완료를 누르면 퍼즐 조각이 맞춰져요'));
+    const mk = (region, label, done, cls) => {
+      const b = h('button', { class: `btn btn-primary pray-btn ${cls}` + (done ? ' done' : '') }, done ? h('span', { html: ICON.check }) : null, done ? `${label} 완료` : `${label} 기도완료`);
+      if (done) b.disabled = true; else b.onclick = () => completePrayer(day, region, b, render);
+      return b;
+    };
+    const head = `DAY ${String(day).padStart(2, '0')}`;
+    Sheet.show({
+      title: head, sub: fmtDate(info.pray_date) + (S.stats[day] ? ` · ${S.stats[day]}명이 함께 기도했어요` : ''),
+      body, foot: [mk('gyeongin', '경인지구', gDone, 'gi'), mk('incheon', '인천지구', iDone, 'ic')]
+    });
+    $('#sheetInner .sheet-head h3').style.cssText = 'font-family:var(--display);font-weight:400;font-size:28px;color:var(--indigo);letter-spacing:.6px;line-height:1';
+  };
+  render();
+}
+
+async function completePrayer(day, region, btn, rerender) {
+  setBusy(btn, true);
+  const wasDone = isDone(day);
+  if (PREVIEW) {
+    S.logs.add(`${day}:${region}`); savePreviewLogs();
+  } else {
+    const { error } = await sb.from('prayer_logs').insert({ day, region });
+    if (error && error.code !== '23505') { setBusy(btn, false); return toast('저장하지 못했어요. 다시 시도해 주세요'); }
+    S.logs.add(`${day}:${region}`);
+  }
+  if (!wasDone && isDone(day)) {
+    S.stats[day] = (S.stats[day] || 0) + 1;
+    await Sheet.close();
+    renderPuzzle(day); renderJourneyCards();
+    $('#puzzleFrame').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const n = S.days.filter(d => isDone(d.day)).length;
+    setTimeout(() => toast(n === 30 ? '🎉 30조각 퍼즐을 모두 완성했어요!' : `DAY ${day} 퍼즐 조각이 맞춰졌어요 ✨`, 3000), 350);
+  } else {
+    rerender(); toast(region === 'gyeongin' ? '경인지구 기도완료 🙏' : '인천지구 기도완료 🙏');
+  }
+}
+
+function renderAdminCard() {
+  const card = $('#adminCard');
+  if (!S.me || !S.me.is_admin) { card.hidden = true; return; }
+  card.hidden = false; card.innerHTML = '';
+  card.append(
+    h('h3', {}, '🔑 관리자 도구'),
+    h('p', {}, '관리자 계정은 날짜와 상관없이 모든 조각을 눌러 기도완료를 테스트할 수 있어요.'),
+    h('div', { class: 'acts' },
+      h('button', { class: 'btn btn-primary btn-sm', style: 'height:46px', onclick: openAdminProgress }, '전체 진행 현황'),
+      h('button', { class: 'btn btn-ghost btn-sm', style: 'height:46px;color:var(--danger)', onclick: resetMyPuzzle }, '내 퍼즐 리셋')));
+}
+async function resetMyPuzzle() {
+  if (!(await dialog({ title: '내 퍼즐을 리셋할까요?', message: '관리자 계정의 기도완료 기록이 모두 지워지고\n퍼즐이 처음 상태로 돌아가요.', ok: '리셋', cancel: '취소', danger: true }))) return;
+  if (!PREVIEW) {
+    const { error } = await sb.from('prayer_logs').delete().eq('user_id', S.me.id);
+    if (error) return toast('리셋하지 못했어요. 다시 시도해 주세요');
+  }
+  S.logs.clear(); savePreviewLogs();
+  const st = await sb.rpc('prayer_day_stats');
+  S.stats = Object.fromEntries((st.data || []).map(x => [x.day, Number(x.prayed_count)]));
+  renderPuzzle(); renderJourneyCards();
+  toast('퍼즐을 리셋했어요');
+}
+async function openAdminProgress() {
+  const body = h('div', {}, h('div', { style: 'padding:30px;display:grid;place-items:center' }, h('div', { class: 'spinner dark' })));
+  Sheet.show({ title: '전체 진행 현황', sub: '회원별로 맞춘 퍼즐 조각 수', body });
+  const { data, error } = await sb.rpc('admin_progress');
+  body.innerHTML = '';
+  if (error) { body.append(h('div', { class: 'empty' }, '불러오지 못했어요. 관리자 계정인지 확인해 주세요.')); return; }
+  const rows = data || [];
+  const n = rows.length, sum = rows.reduce((a, r) => a + r.completed, 0);
+  const tDay = todayDay();
+  const todayCount = tDay ? (S.stats[tDay] || 0) : 0;
+  body.append(h('div', { class: 'stat-grid' },
+    h('div', { class: 'stat' }, h('b', {}, `${n}명`), h('span', {}, '가입한 회원')),
+    h('div', { class: 'stat' }, h('b', {}, n ? (sum / n).toFixed(1) : '0'), h('span', {}, '평균 맞춘 조각')),
+    h('div', { class: 'stat' }, h('b', {}, `${rows.filter(r => r.completed >= 30).length}명`), h('span', {}, '30조각 완성')),
+    h('div', { class: 'stat' }, h('b', {}, `${todayCount}명`), h('span', {}, tDay ? `오늘(DAY ${tDay}) 완료` : '오늘 완료'))));
+  const campuses = [...new Set(rows.map(r => r.campus))].sort();
+  let campusFilter = '', q = '';
+  const search = h('input', { class: 'input', placeholder: '이름·아이디·캠퍼스 검색', style: 'height:44px' });
+  const chips = h('div', { class: 'chips', style: 'margin:8px 0 6px' });
+  const list = h('div');
+  const paintChips = () => {
+    chips.innerHTML = '';
+    ['', ...campuses].forEach(c => {
+      const on = campusFilter === c;
+      chips.append(h('button', { class: 'chip', style: on ? 'background:var(--indigo);color:#fff;border-color:var(--indigo)' : '', onclick: () => { campusFilter = c; paintChips(); paint(); } },
+        c || '전체', ` ${c ? rows.filter(r => r.campus === c).length : n}`));
+    });
+  };
+  const paint = () => {
+    list.innerHTML = '';
+    const f = rows.filter(r => (!campusFilter || r.campus === campusFilter) && (!q || `${r.name} ${r.username} ${r.campus}`.toLowerCase().includes(q)));
+    if (!f.length) { list.append(h('div', { class: 'empty' }, '해당하는 회원이 없어요')); return; }
+    f.forEach(r => list.append(h('div', { class: 'prog-row' },
+      avatar(r.name),
+      h('div', { class: 'who' },
+        h('b', {}, r.name), h('span', {}, `${r.campus} · ${r.student_id} · @${r.username}` + (r.partial ? ` · 진행 중 ${r.partial}일` : '') + (r.last_prayed_at ? ` · 최근 ${timeAgo(r.last_prayed_at)}` : '')),
+        h('div', { class: 'bar' }, h('i', { style: `width:${Math.min(r.completed, 30) / 30 * 100}%` }))),
+      h('div', { class: 'num' }, String(r.completed), h('small', {}, ' /30')))));
+  };
+  search.oninput = () => { q = search.value.trim().toLowerCase(); paint(); };
+  body.append(search, chips, list);
+  paintChips(); paint();
+}
+
+function renderJourneyCards() {
+  renderAdminCard();
+  const today = kstToday(), tDay = todayDay();
+  const doneCount = S.days.filter(d => isDone(d.day)).length;
+  const dRetreat = daysBetween(today, RETREAT_START);
+  const missed = S.days.filter(d => ['missed', 'partial'].includes(dayStatus(d.day))).length;
+  const hero = $('#jHero'); hero.innerHTML = '';
+  let title, sub;
+  if (today < JOURNEY_START) { title = 'READY'; sub = `${fmtDate(JOURNEY_START)}부터 30일 기도 여정이 시작돼요`; }
+  else if (tDay) { title = `DAY ${String(tDay).padStart(2, '0')} / 30`; sub = fmtDate(today) + ' · 오늘의 조각이 빛나고 있어요'; }
+  else { title = 'FINISH'; sub = '30일 기도 여정이 끝났어요. 수련회에서 만나요!'; }
+  hero.append(
+    h('div', { class: 'row' },
+      h('div', {}, h('div', { class: 'day' }, title), h('div', { class: 'date' }, sub)),
+      h('div', { class: 'dday' }, dRetreat > 0 ? `D-${dRetreat}` : dRetreat === 0 ? 'D-DAY' : '♥')),
+    h('div', { class: 'progress' }, h('i', { style: `width:${doneCount / 30 * 100}%` })),
+    h('div', { class: 'meta' }, h('span', {}, `완성한 조각 ${doneCount} / 30`), h('span', {}, missed ? `놓친 날 ${missed}일` : '')));
+
+  const card = $('#todayCard'); card.innerHTML = '';
+  if (doneCount === 30) {
+    card.className = 'card complete-card';
+    card.append(h('div', { class: 'big' }, 'GOD\'S WAY!'), h('p', { style: 'margin:8px 0 0;color:var(--ink-2)' }, '30일 기도 퍼즐을 모두 완성했어요.\n길이 없는 곳에 길을 만드시는 하나님을 기대해요!'));
+    return;
+  }
+  card.className = 'card today-card';
+  if (today < JOURNEY_START) {
+    const left = daysBetween(today, JOURNEY_START);
+    card.append(h('h3', {}, `기도 여정 시작까지 ${left}일`),
+      h('p', {}, '매일 경인지구·인천지구 기도제목으로 기도하고 [기도완료]를 누르면 그날의 퍼즐 조각이 맞춰져요. 30일 동안 포스터를 함께 완성해요!'),
+      h('button', { class: 'btn btn-soft btn-block', onclick: () => go('prayers') }, '먼저 기도제목 나누러 가기'));
+  } else if (tDay) {
+    const st = dayStatus(tDay);
+    const g = S.logs.has(tDay + ':gyeongin'), i = S.logs.has(tDay + ':incheon');
+    card.append(h('h3', {}, st === 'done' ? '오늘의 조각을 맞췄어요 ✓' : '오늘의 기도제목'),
+      h('p', {}, st === 'done' ? '내일도 함께 기도해요. 놓친 날이 있다면 지금 채워도 좋아요.' : `경인지구 ${g ? '✓' : '○'} · 인천지구 ${i ? '✓' : '○'}  두 지구 모두 기도하면 조각이 맞춰져요.`),
+      h('button', { class: 'btn btn-primary btn-block', onclick: () => openDay(tDay) }, st === 'done' ? '오늘 기도제목 다시 보기' : '오늘의 기도제목 보기'),
+      h('div', { class: 'together' }, h('span', { style: 'font-size:22px' }, '🙏'), h('span', {}, '오늘 ', h('b', {}, `${S.stats[tDay] || 0}명`), '이 함께 기도를 완료했어요')));
+    if (missed) {
+      const first = S.days.find(d => ['missed', 'partial'].includes(dayStatus(d.day)));
+      card.append(h('button', { class: 'btn btn-ghost btn-block', style: 'margin-top:10px', onclick: () => openDay(first.day) }, `놓친 날 ${missed}일 채우기`));
+    }
+  } else {
+    card.append(h('h3', {}, '수련회에서 만나요!'), h('p', {}, '놓친 조각이 있다면 지금 기도하고 채울 수 있어요.'),
+      missed ? h('button', { class: 'btn btn-primary btn-block', onclick: () => openDay(S.days.find(d => ['missed', 'partial'].includes(dayStatus(d.day))).day) }, `놓친 날 ${missed}일 채우기`) : null);
+  }
+}
+
+/* 미리보기 모드 (?preview=2026-12-05) — 기록은 이 기기에만 임시 저장 */
+function previewKey() { return 'gp-preview-' + (S.me ? S.me.id : ''); }
+function loadPreviewLogs() { try { JSON.parse(localStorage.getItem(previewKey()) || '[]').forEach(k => S.logs.add(k)); } catch (e) {} }
+function savePreviewLogs() { try { localStorage.setItem(previewKey(), JSON.stringify([...S.logs])); } catch (e) {} }
+if (PREVIEW) {
+  const b = $('#previewBanner'); b.hidden = false;
+  b.innerHTML = `👀 미리보기 모드 · 오늘을 <b>${PREVIEW}</b>로 가정해요. 기도완료 기록은 저장되지 않아요.`;
+}
+
+/* =========================================================
+   섹션 2: 개인 기도제목
+   ========================================================= */
+const REACTS = [
+  { key: 'pray', e: '🙏', label: '기도할게요' },
+  { key: 'heart', e: '❤️', label: '공감해요' },
+  { key: 'cheer', e: '💪', label: '힘내요' },
+  { key: 'together', e: '🤝', label: '함께해요' },
+];
+$$('#scopeSeg button').forEach(b => b.addEventListener('click', () => {
+  S.scope = b.dataset.scope;
+  $$('#scopeSeg button').forEach(x => x.classList.toggle('on', x === b));
+  loadFeed(true);
+}));
+$('#moreBtn').onclick = () => loadFeed(false);
+$('#addPrayerBtn').onclick = () => openCompose();
+
+async function loadFeed(reset) {
+  if (S.feedLoading) return;
+  const feed = $('#feed');
+  if (reset) {
+    S.feedPage = 0; S.feedDone = false;
+    feed.innerHTML = '';
+    for (let i = 0; i < 3; i++) feed.append(h('div', { class: 'card pr-card' }, h('div', { class: 'skeleton', style: 'height:18px;width:40%' }), h('div', { class: 'skeleton', style: 'height:60px;margin-top:12px' })));
+  }
+  S.feedLoading = true;
+  const scope = S.scope;
+  let q = sb.from('prayer_requests')
+    .select('id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus),prayer_reactions(emoji,user_id),prayer_comments(count)')
+    .order('created_at', { ascending: false })
+    .range(S.feedPage * PAGE, S.feedPage * PAGE + PAGE - 1);
+  if (scope === 'me') q = q.eq('user_id', S.me.id);
+  if (scope === 'campus') q = q.eq('campus', S.me.campus);
+  const { data, error } = await q;
+  S.feedLoading = false;
+  if (scope !== S.scope) return; // 탭이 바뀐 경우 무시
+  if (reset) feed.innerHTML = '';
+  if (error) { feed.append(h('div', { class: 'empty' }, '기도제목을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.')); return; }
+  data.forEach(r => feed.append(prayerCard(r)));
+  S.feedPage++; S.feedDone = data.length < PAGE;
+  $('#moreBtn').hidden = S.feedDone;
+  if (reset && !data.length) {
+    const msg = scope === 'me' ? ['✍️', '아직 내 기도제목이 없어요.', '위의 [기도제목 추가]를 눌러 나눠 보세요.']
+      : scope === 'campus' ? ['🏫', `${S.me.campus}의 첫 기도제목을 나눠 주세요!`, '']
+      : ['🕊️', '아직 나눠진 기도제목이 없어요.', ''];
+    feed.append(h('div', { class: 'empty', style: 'grid-column:1/-1' }, h('div', { class: 'ic' }, msg[0]), msg[1], msg[2] ? h('div', { style: 'font-size:13px;margin-top:4px' }, msg[2]) : null));
+  }
+}
+
+function prayerCard(r) {
+  const mine = r.user_id === S.me.id;
+  const name = r.author?.name || '알 수 없음', campus = r.author?.campus || r.campus;
+  let reactions = r.prayer_reactions || [];
+  let cmtCount = r.prayer_comments?.[0]?.count || 0;
+  const el = h('article', { class: 'card pr-card' });
+  const content = h('p', { class: 'pr-content' }, r.content);
+  const reactRow = h('div', { class: 'react-row' });
+  const cmtBtn = h('button', { class: 'cmt-toggle' });
+  const cmtBox = h('div', { class: 'cmts', hidden: true });
+  const paintCmtBtn = () => { cmtBtn.innerHTML = `${ICON.chat}<span>${cmtCount ? '댓글 ' + cmtCount : '댓글'}</span>`; };
+  const paintReacts = () => {
+    reactRow.innerHTML = '';
+    REACTS.forEach(rx => {
+      const list = reactions.filter(x => x.emoji === rx.key), on = list.some(x => x.user_id === S.me.id);
+      const b = h('button', { class: 'react' + (on ? ' on' : ''), title: rx.label, 'aria-pressed': on ? 'true' : 'false' },
+        h('span', { class: 'e' }, rx.e), rx.key === 'pray' ? h('span', { class: 'lbl' }, rx.label) : null, list.length ? h('span', {}, String(list.length)) : null);
+      b.onclick = async () => {
+        if (b.dataset.busy) return; b.dataset.busy = 1;
+        if (on) {
+          reactions = reactions.filter(x => !(x.emoji === rx.key && x.user_id === S.me.id)); paintReacts();
+          const { error } = await sb.from('prayer_reactions').delete().match({ request_id: r.id, user_id: S.me.id, emoji: rx.key });
+          if (error) { reactions.push({ emoji: rx.key, user_id: S.me.id }); paintReacts(); toast('잠시 후 다시 시도해 주세요'); }
+        } else {
+          reactions = [...reactions, { emoji: rx.key, user_id: S.me.id }]; paintReacts();
+          const { error } = await sb.from('prayer_reactions').insert({ request_id: r.id, emoji: rx.key });
+          if (error && error.code !== '23505') { reactions = reactions.filter(x => !(x.emoji === rx.key && x.user_id === S.me.id)); paintReacts(); toast('잠시 후 다시 시도해 주세요'); }
+        }
+      };
+      reactRow.append(b);
+    });
+    reactRow.append(cmtBtn);
+  };
+  paintCmtBtn(); paintReacts();
+
+  cmtBtn.onclick = async () => {
+    cmtBox.hidden = !cmtBox.hidden;
+    if (!cmtBox.hidden && !cmtBox.dataset.loaded) await loadComments();
+  };
+  async function loadComments() {
+    cmtBox.innerHTML = ''; cmtBox.append(h('div', { style: 'padding:10px;display:grid;place-items:center' }, h('div', { class: 'spinner dark' })));
+    const { data } = await sb.from('prayer_comments').select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus)').eq('request_id', r.id).order('created_at');
+    cmtBox.dataset.loaded = 1; cmtBox.innerHTML = '';
+    const list = h('div');
+    (data || []).forEach(c => list.append(commentEl(c)));
+    cmtCount = (data || []).length; paintCmtBtn();
+    const inp = h('input', { class: 'input', placeholder: '따뜻한 댓글로 함께 기도해요', maxlength: 500, enterkeyhint: 'send' });
+    const send = h('button', { class: 'btn btn-primary btn-sm', type: 'submit' }, '등록');
+    const form = h('form', { class: 'cmt-form' }, inp, send);
+    form.onsubmit = async e => {
+      e.preventDefault(); const text = inp.value.trim(); if (!text) return;
+      setBusy(send, true);
+      const { data: c, error } = await sb.from('prayer_comments').insert({ request_id: r.id, content: text }).select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus)').single();
+      setBusy(send, false, '등록');
+      if (error) return toast('댓글을 등록하지 못했어요');
+      inp.value = ''; list.append(commentEl(c)); cmtCount++; paintCmtBtn();
+    };
+    cmtBox.append(list, form);
+  }
+  function commentEl(c) {
+    const mineC = c.user_id === S.me.id;
+    const row = h('div', { class: 'cmt' }, avatar(c.author?.name),
+      h('div', { class: 'body' }, h('b', {}, c.author?.name || ''), h('span', {}, `${c.author?.campus || ''} · ${timeAgo(c.created_at)}`), h('p', {}, c.content)),
+      mineC ? h('button', { class: 'del', 'aria-label': '댓글 삭제' }, '삭제') : null);
+    if (mineC) $('.del', row).onclick = async () => {
+      if (!(await dialog({ title: '댓글을 삭제할까요?', ok: '삭제', cancel: '취소', danger: true }))) return;
+      const { error } = await sb.from('prayer_comments').delete().eq('id', c.id);
+      if (error) return toast('삭제하지 못했어요');
+      row.remove(); cmtCount--; paintCmtBtn();
+    };
+    return row;
+  }
+
+  const head = h('div', { class: 'pr-head' }, avatar(name),
+    h('div', { class: 'who' }, h('b', {}, name + (mine ? ' (나)' : '')), h('span', {}, `${campus} · ${timeAgo(r.created_at)}${r.updated_at ? ' · 수정됨' : ''}`)),
+    mine ? h('button', { class: 'more-btn', html: ICON.more, 'aria-label': '더보기' }) : null);
+  if (mine) $('.more-btn', head).onclick = () => {
+    Sheet.show({
+      title: '내 기도제목', body: h('div', { class: 'action-list' },
+        h('button', { onclick: async () => { await Sheet.close(); openCompose(r, txt => { r.content = txt; content.textContent = txt; }); } }, '수정하기'),
+        h('button', { class: 'danger', onclick: async () => {
+          if (!(await dialog({ title: '기도제목을 삭제할까요?', message: '공감과 댓글도 함께 삭제돼요.', ok: '삭제', cancel: '취소', danger: true }))) return;
+          const { error } = await sb.from('prayer_requests').delete().eq('id', r.id);
+          await Sheet.close(); if (error) return toast('삭제하지 못했어요');
+          el.remove(); toast('삭제했어요');
+        } }, '삭제하기'))
+    });
+  };
+  el.append(head, content, reactRow, cmtBox);
+  return el;
+}
+
+function openCompose(existing = null, onSaved = null) {
+  const ta = h('textarea', { class: 'input', maxlength: 1000, placeholder: '함께 기도받고 싶은 제목을 자유롭게 적어 주세요.\n\n같은 캠퍼스와 경인·인천 지구 지체들이 함께 볼 수 있어요.' });
+  ta.value = existing ? existing.content : '';
+  const cnt = h('div', { class: 'counter' }, `${ta.value.length} / 1000`);
+  ta.oninput = () => { cnt.textContent = `${ta.value.length} / 1000`; };
+  const save = h('button', { class: 'btn btn-primary' }, existing ? '수정 완료' : '기도제목 올리기');
+  save.onclick = async () => {
+    const text = ta.value.trim(); if (!text) return toast('기도제목을 입력해 주세요');
+    setBusy(save, true);
+    if (existing) {
+      const { error } = await sb.from('prayer_requests').update({ content: text }).eq('id', existing.id);
+      setBusy(save, false, '수정 완료'); if (error) return toast('수정하지 못했어요');
+      await Sheet.close(); onSaved && onSaved(text); toast('수정했어요');
+    } else {
+      const { error } = await sb.from('prayer_requests').insert({ content: text });
+      setBusy(save, false, '기도제목 올리기'); if (error) return toast('올리지 못했어요. 다시 시도해 주세요');
+      await Sheet.close(); toast('기도제목을 나눴어요 🙏');
+      if (S.section !== 'prayers') go('prayers'); else loadFeed(true);
+    }
+  };
+  Sheet.show({
+    title: existing ? '기도제목 수정' : '기도제목 추가',
+    sub: `${S.me.name} · ${S.me.campus}`,
+    body: h('div', {}, h('div', { class: 'field' }, ta), cnt),
+    foot: save
+  });
+  setTimeout(() => ta.focus(), 350);
+}
+
+/* =========================================================
+   섹션 3: 수련회 안내 (DB에서 불러옴)
+   ========================================================= */
+$('#posterCard').onclick = () => viewer('assets/poster-hd.webp', '경인금식수련회 포스터');
+async function loadInfo() {
+  const d = daysBetween(kstToday(), RETREAT_START);
+  $('#infoDday').textContent = d > 0 ? `D-${d}` : d === 0 ? 'D-DAY' : 'THANK YOU';
+  if (S.infoLoaded) return;
+  const list = $('#infoList'); list.innerHTML = '';
+  for (let i = 0; i < 5; i++) list.append(h('div', { class: 'skeleton', style: 'height:20px;margin:16px 0' }));
+  const [info, links, notices] = await Promise.all([
+    sb.from('retreat_info').select('label,value,link_url,highlight').order('sort_order'),
+    sb.from('retreat_links').select('label,url,primary_button').order('sort_order'),
+    sb.from('notices').select('title,body,pinned,created_at').order('pinned', { ascending: false }).order('created_at', { ascending: false }),
+  ]);
+  list.innerHTML = '';
+  (info.data || []).forEach(r => list.append(h('div', { class: 'info-row' + (r.highlight ? ' hl' : '') },
+    h('dt', {}, r.label), h('dd', {}, r.link_url ? h('a', { href: r.link_url, target: '_blank', rel: 'noopener' }, r.value) : r.value))));
+  const lb = $('#infoLinks'); lb.innerHTML = '';
+  (links.data || []).forEach(l => lb.append(h('a', { class: 'btn link-btn ' + (l.primary_button ? 'btn-primary' : 'btn-ghost'), href: l.url, target: '_blank', rel: 'noopener' }, l.label, ' →')));
+  const nb = $('#notices'); nb.innerHTML = '';
+  if ((notices.data || []).length) nb.append(h('h3', { style: 'margin:8px 2px 0;font-size:17px' }, '📢 공지사항'));
+  (notices.data || []).forEach(n => nb.append(h('div', { class: 'card notice' },
+    h('h4', {}, n.pinned ? h('span', { class: 'badge b-peri' }, '고정') : null, n.title),
+    n.body ? h('p', {}, n.body) : null, h('time', {}, timeAgo(n.created_at)))));
+  S.infoLoaded = !info.error;
+}
+
+/* =========================================================
+   시작
+   ========================================================= */
+window.addEventListener('hashchange', () => { if (!$('#app').hidden) route(); });
+document.addEventListener('visibilitychange', () => {
+  // 앱으로 돌아오면 날짜가 바뀌었을 수 있으니 새로 그림
+  if (document.visibilityState === 'visible' && S.me && S.section === 'journey') loadJourney();
+});
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) await enterApp(); else showAuth();
+  sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT') { S.me = null; } });
+})();
+</script>
+</body>
+</html>
