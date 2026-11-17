@@ -275,6 +275,17 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .seg button small{font-size:11px;font-weight:600;opacity:.8;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
 .seg button.on{background:var(--indigo);color:#fff}
 .feed{display:grid;gap:12px;align-items:start}
+.gift-bar{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px 12px 12px;margin-bottom:14px;text-align:left;
+  background:linear-gradient(120deg,#FFF3D3 0%,#F4EEFB 70%);border:1px solid rgba(255,255,255,.9)}
+.gift-bar:active{transform:scale(.985)}
+.gift-bar .gift{font-size:32px;width:56px;height:56px;border-radius:18px;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -8px rgba(138,91,0,.5)}
+.gift-bar .gt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.gift-bar .gt b{font-size:16px;color:var(--ink)}
+.gift-bar .gt small{font-size:13px;color:var(--ink-2);font-weight:600}
+.gift-bar.shake .gift{animation:wiggle .55s ease}
+@keyframes wiggle{0%,100%{transform:none}20%{transform:rotate(-14deg) scale(1.1)}40%{transform:rotate(12deg) scale(1.15)}60%{transform:rotate(-8deg) scale(1.1)}80%{transform:rotate(5deg)}}
+.gift-head{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-weight:700;color:#8A5B00;font-size:14px;background:#FFF6DE;border-radius:12px;padding:10px 12px}
+.sheet .pr-card{box-shadow:none;border-color:var(--line)}
 .pr-card{padding:16px 16px 12px}
 .pr-head{display:flex;align-items:center;gap:10px}
 .pr-head .who{flex:1;min-width:0}
@@ -477,6 +488,11 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
         <button data-scope="campus">캠퍼스<small id="campusLabel">우리 캠퍼스</small></button>
         <button data-scope="all">지구<small>경인·인천 전체</small></button>
       </div>
+      <button class="card gift-bar" id="giftBtn" hidden aria-label="랜덤 기도제목 받기">
+        <span class="gift" aria-hidden="true">🎁</span>
+        <span class="gt"><b>랜덤 기도제목</b><small id="giftSub"></small></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-3);flex:none"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
       <div class="feed" id="feed"></div>
       <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost btn-sm" id="moreBtn" hidden>더 보기</button></div>
     </section>
@@ -884,6 +900,7 @@ async function enterApp(isNew = false) {
   $('#meName').textContent = S.me.name;
   $('#meAvatar').replaceWith(Object.assign(avatar(S.me.name), { id: 'meAvatar' }));
   $('#campusLabel').textContent = S.me.campus;
+  paintGift();
   if (isNew) toast(`${S.me.name}님, 환영합니다! 🙏`);
   route();
 }
@@ -1294,8 +1311,65 @@ const REACTS = [
 $$('#scopeSeg button').forEach(b => b.addEventListener('click', () => {
   S.scope = b.dataset.scope;
   $$('#scopeSeg button').forEach(x => x.classList.toggle('on', x === b));
+  paintGift();
   loadFeed(true);
 }));
+function paintGift() {
+  $('#giftBtn').hidden = S.scope === 'me';
+  $('#giftSub').textContent = S.scope === 'campus'
+    ? `${S.me.campus} 기도제목 하나를 선물처럼 받아 기도해요`
+    : '경인·인천 지구 기도제목 하나를 선물처럼 받아 기도해요';
+}
+$('#giftBtn').onclick = () => {
+  const b = $('#giftBtn'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+  setTimeout(openRandomPrayer, 450);
+};
+
+/* 🎁 랜덤 기도제목 */
+const FEED_SELECT = 'id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus),prayer_reactions(emoji,user_id),prayer_comments(count)';
+async function openRandomPrayer() {
+  const scope = S.scope, campus = scope === 'campus' ? S.me.campus : null;
+  let seen = [], changed = false;
+  const scopeName = scope === 'campus' ? S.me.campus : '경인·인천 지구';
+  async function pick() {
+    let { data: id, error } = await sb.rpc('random_prayer_request', { p_campus: campus, p_exclude: seen });
+    if (error) { toast('기도제목을 불러오지 못했어요'); return null; }
+    if (!id && seen.length) { seen = []; toast('모든 기도제목을 한 바퀴 돌았어요. 처음부터 다시 뽑을게요'); ({ data: id } = await sb.rpc('random_prayer_request', { p_campus: campus, p_exclude: [] })); }
+    if (!id) return null;
+    seen.push(id);
+    const { data } = await sb.from('prayer_requests').select(FEED_SELECT).eq('id', id).single();
+    return data;
+  }
+  async function draw() {
+    const r = await pick();
+    if (!r) {
+      if (Sheet.open) await Sheet.close();
+      return toast(`아직 ${scopeName}에 다른 사람의 기도제목이 없어요`);
+    }
+    const prayed = () => (r.prayer_reactions || []).some(x => x.emoji === 'pray' && x.user_id === S.me.id);
+    const again = h('button', { class: 'btn btn-soft' }, '🎁 다시 뽑기');
+    const done = h('button', { class: 'btn btn-primary' }, prayed() ? '✓ 기도했어요' : '🙏 기도했어요');
+    if (prayed()) done.disabled = true;
+    again.onclick = async () => { setBusy(again, true); await draw(); };
+    done.onclick = async () => {
+      setBusy(done, true);
+      const { error } = await sb.from('prayer_reactions').insert({ request_id: r.id, emoji: 'pray' });
+      if (error && error.code !== '23505') { setBusy(done, false, '🙏 기도했어요'); return toast('잠시 후 다시 시도해 주세요'); }
+      changed = true;
+      const { data } = await sb.from('prayer_requests').select(FEED_SELECT).eq('id', r.id).single();
+      if (data) { const old = $('#sheetInner .pr-card'); old && old.replaceWith(prayerCard(data, () => { changed = true; })); }
+      setBusy(done, false, '✓ 기도했어요'); done.disabled = true;
+      toast(`${r.author?.name || ''}님을 위해 함께 기도했어요 🙏`);
+    };
+    Sheet.show({
+      title: '🎁 랜덤 기도제목', sub: scopeName,
+      body: h('div', {}, h('div', { class: 'gift-head' }, '이 기도제목으로 함께 기도해 주세요'), prayerCard(r, () => { changed = true; })),
+      foot: [again, done],
+      onClose: () => { if (changed && S.section === 'prayers') loadFeed(true); }
+    });
+  }
+  await draw();
+}
 $('#moreBtn').onclick = () => loadFeed(false);
 $('#addPrayerBtn').onclick = () => openCompose();
 
@@ -1310,7 +1384,7 @@ async function loadFeed(reset) {
   S.feedLoading = true;
   const scope = S.scope;
   let q = sb.from('prayer_requests')
-    .select('id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus),prayer_reactions(emoji,user_id),prayer_comments(count)')
+    .select(FEED_SELECT)
     .order('created_at', { ascending: false })
     .range(S.feedPage * PAGE, S.feedPage * PAGE + PAGE - 1);
   if (scope === 'me') q = q.eq('user_id', S.me.id);
@@ -1331,7 +1405,7 @@ async function loadFeed(reset) {
   }
 }
 
-function prayerCard(r) {
+function prayerCard(r, onChange = null) {
   const mine = r.user_id === S.me.id;
   const name = r.author?.name || '알 수 없음', campus = r.author?.campus || r.campus;
   let reactions = r.prayer_reactions || [];
@@ -1347,9 +1421,9 @@ function prayerCard(r) {
     REACTS.forEach(rx => {
       const list = reactions.filter(x => x.emoji === rx.key), on = list.some(x => x.user_id === S.me.id);
       const b = h('button', { class: 'react' + (on ? ' on' : ''), title: rx.label, 'aria-pressed': on ? 'true' : 'false' },
-        h('span', { class: 'e' }, rx.e), rx.key === 'pray' ? h('span', { class: 'lbl' }, rx.label) : null, list.length ? h('span', {}, String(list.length)) : null);
+        h('span', { class: 'e' }, rx.e), list.length ? h('span', {}, String(list.length)) : null);
       b.onclick = async () => {
-        if (b.dataset.busy) return; b.dataset.busy = 1;
+        if (b.dataset.busy) return; b.dataset.busy = 1; onChange && onChange();
         if (on) {
           reactions = reactions.filter(x => !(x.emoji === rx.key && x.user_id === S.me.id)); paintReacts();
           const { error } = await sb.from('prayer_reactions').delete().match({ request_id: r.id, user_id: S.me.id, emoji: rx.key });
@@ -1386,7 +1460,7 @@ function prayerCard(r) {
       const { data: c, error } = await sb.from('prayer_comments').insert({ request_id: r.id, content: text }).select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus)').single();
       setBusy(send, false, '등록');
       if (error) return toast('댓글을 등록하지 못했어요');
-      inp.value = ''; list.append(commentEl(c)); cmtCount++; paintCmtBtn();
+      inp.value = ''; list.append(commentEl(c)); cmtCount++; paintCmtBtn(); onChange && onChange();
     };
     cmtBox.append(list, form);
   }
