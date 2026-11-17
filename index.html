@@ -1107,25 +1107,32 @@ function openDay(day) {
   const render = () => {
     const gDone = S.logs.has(day + ':gyeongin'), iDone = S.logs.has(day + ':incheon');
     const st = dayStatus(day);
+    const admin = S.me.is_admin;
+    const closed = (st === 'missed' || st === 'partial') && !admin; // 놓친 날은 다시 맞출 수 없음
     const badge = st === 'done' ? h('span', { class: 'badge b-ok' }, '✓ 조각 완성')
       : st === 'today' ? h('span', { class: 'badge b-gold' }, '오늘의 조각')
       : st === 'locked' ? h('span', { class: 'badge b-peri' }, '🔑 관리자 테스트 · 아직 열리지 않은 날')
-      : h('span', { class: 'badge b-gray' }, '놓친 날 · 지금 기도해도 돼요');
+      : admin ? h('span', { class: 'badge b-peri' }, '🔑 관리자 테스트 · 지난 날')
+      : h('span', { class: 'badge b-gray' }, '놓친 날 · 이 조각은 다시 맞출 수 없어요');
     const body = h('div', {},
       h('div', { style: 'margin:-2px 0 14px' }, badge),
       info.memo ? h('p', { style: 'margin:0 0 14px;color:var(--ink-2)' }, info.memo) : null,
       topicBlock('경인지구', 'gi', info.gyeongin_image, gDone),
       topicBlock('인천지구', 'ic', info.incheon_image, iDone),
-      h('p', { class: 'hint', style: 'text-align:center;margin:4px 0 0' }, '두 지구 모두 기도완료를 누르면 퍼즐 조각이 맞춰져요'));
+      h('p', { class: 'hint', style: 'text-align:center;margin:4px 0 0' },
+        closed ? '기도 기간이 지난 날이에요. 기도제목은 계속 볼 수 있어요.' : '두 지구 모두 기도완료를 누르면 퍼즐 조각이 맞춰져요. 오늘이 지나면 다시 맞출 수 없어요!'));
     const mk = (region, label, done, cls) => {
       const b = h('button', { class: `btn btn-primary pray-btn ${cls}` + (done ? ' done' : '') }, done ? h('span', { html: ICON.check }) : null, done ? `${label} 완료` : `${label} 기도완료`);
       if (done) b.disabled = true; else b.onclick = () => completePrayer(day, region, b, render);
       return b;
     };
     const head = `DAY ${String(day).padStart(2, '0')}`;
+    const foot = closed
+      ? h('button', { class: 'btn btn-soft', disabled: true }, '기도 기간이 지났어요')
+      : [mk('gyeongin', '경인지구', gDone, 'gi'), mk('incheon', '인천지구', iDone, 'ic')];
     Sheet.show({
       title: head, sub: fmtDate(info.pray_date) + (S.stats[day] ? ` · ${S.stats[day]}명이 함께 기도했어요` : ''),
-      body, foot: [mk('gyeongin', '경인지구', gDone, 'gi'), mk('incheon', '인천지구', iDone, 'ic')]
+      body, foot
     });
     $('#sheetInner .sheet-head h3').style.cssText = 'font-family:var(--display);font-weight:400;font-size:28px;color:var(--indigo);letter-spacing:.6px;line-height:1';
   };
@@ -1139,6 +1146,9 @@ async function completePrayer(day, region, btn, rerender) {
     S.logs.add(`${day}:${region}`); savePreviewLogs();
   } else {
     const { error } = await sb.from('prayer_logs').insert({ day, region });
+    if (error && error.code === '42501') {
+      await Sheet.close(); toast('날짜가 바뀌어 이 조각은 더 이상 맞출 수 없어요'); loadJourney(); return;
+    }
     if (error && error.code !== '23505') { setBusy(btn, false); return toast('저장하지 못했어요. 다시 시도해 주세요'); }
     S.logs.add(`${day}:${region}`);
   }
@@ -1249,22 +1259,17 @@ function renderJourneyCards() {
   if (today < JOURNEY_START) {
     const left = daysBetween(today, JOURNEY_START);
     card.append(h('h3', {}, `기도 여정 시작까지 ${left}일`),
-      h('p', {}, '매일 경인지구·인천지구 기도제목으로 기도하고 [기도완료]를 누르면 그날의 퍼즐 조각이 맞춰져요. 30일 동안 포스터를 함께 완성해요!'),
+      h('p', {}, '매일 경인지구·인천지구 기도제목으로 기도하고 [기도완료]를 누르면 그날의 퍼즐 조각이 맞춰져요. 그날을 놓치면 조각은 비어 있게 되니, 하루도 빠짐없이 30일 동안 포스터를 함께 완성해요!'),
       h('button', { class: 'btn btn-soft btn-block', onclick: () => go('prayers') }, '먼저 기도제목 나누러 가기'));
   } else if (tDay) {
     const st = dayStatus(tDay);
     const g = S.logs.has(tDay + ':gyeongin'), i = S.logs.has(tDay + ':incheon');
     card.append(h('h3', {}, st === 'done' ? '오늘의 조각을 맞췄어요 ✓' : '오늘의 기도제목'),
-      h('p', {}, st === 'done' ? '내일도 함께 기도해요. 놓친 날이 있다면 지금 채워도 좋아요.' : `경인지구 ${g ? '✓' : '○'} · 인천지구 ${i ? '✓' : '○'}  두 지구 모두 기도하면 조각이 맞춰져요.`),
+      h('p', {}, st === 'done' ? '내일도 함께 기도해요!' : `경인지구 ${g ? '✓' : '○'} · 인천지구 ${i ? '✓' : '○'}  오늘 안에 두 지구 모두 기도해야 조각이 맞춰져요.`),
       h('button', { class: 'btn btn-primary btn-block', onclick: () => openDay(tDay) }, st === 'done' ? '오늘 기도제목 다시 보기' : '오늘의 기도제목 보기'),
       h('div', { class: 'together' }, h('span', { style: 'font-size:22px' }, '🙏'), h('span', {}, '오늘 ', h('b', {}, `${S.stats[tDay] || 0}명`), '이 함께 기도를 완료했어요')));
-    if (missed) {
-      const first = S.days.find(d => ['missed', 'partial'].includes(dayStatus(d.day)));
-      card.append(h('button', { class: 'btn btn-ghost btn-block', style: 'margin-top:10px', onclick: () => openDay(first.day) }, `놓친 날 ${missed}일 채우기`));
-    }
   } else {
-    card.append(h('h3', {}, '수련회에서 만나요!'), h('p', {}, '놓친 조각이 있다면 지금 기도하고 채울 수 있어요.'),
-      missed ? h('button', { class: 'btn btn-primary btn-block', onclick: () => openDay(S.days.find(d => ['missed', 'partial'].includes(dayStatus(d.day))).day) }, `놓친 날 ${missed}일 채우기`) : null);
+    card.append(h('h3', {}, '수련회에서 만나요!'), h('p', {}, `30일 동안 ${doneCount}개의 조각을 맞췄어요. 길이 없는 곳에 길을 만드시는 하나님을 기대해요!`));
   }
 }
 
