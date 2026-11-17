@@ -156,9 +156,11 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 /* 하단 플로팅 내비게이션 */
 .nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safe-b));z-index:30;width:min(calc(100% - 28px),440px);height:var(--nav-h);
   display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:7px;border-radius:24px;
-  background:rgba(255,255,255,.86);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
-  border:1px solid rgba(255,255,255,.95);box-shadow:0 14px 34px -10px rgba(31,28,90,.38)}
-.nav button{border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink-3);font-size:12px;font-weight:700;transition:background .25s,color .25s}
+  background:linear-gradient(180deg,rgba(255,255,255,.52),rgba(255,255,255,.34));
+  backdrop-filter:blur(10px) saturate(1.8);-webkit-backdrop-filter:blur(10px) saturate(1.8);
+  border:1px solid rgba(255,255,255,.7);box-shadow:0 14px 34px -12px rgba(31,28,90,.4),inset 0 1px 0 rgba(255,255,255,.6)}
+.nav button{border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink-2);font-size:12px;font-weight:700;transition:background .25s,color .25s;text-shadow:0 1px 2px rgba(255,255,255,.6)}
+.nav button.on{text-shadow:none}
 .nav button svg{width:24px;height:24px}
 .nav button.on{background:var(--indigo);color:#fff;box-shadow:0 6px 16px -6px rgba(47,42,126,.9)}
 
