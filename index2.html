@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Gaegu:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{
@@ -354,47 +354,52 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .notice time{font-size:12px;color:var(--ink-3)}
 
 
-/* ---------- 섹션 4: 기도통장 ---------- */
+/* ---------- 섹션 4: 기도통장 (앱 색감: 남보라 · 페리윙클 · 해의 금빛) ---------- */
 .bank{display:grid;gap:14px}
 .bank-left,.bank-right{display:grid;gap:14px;align-content:start;min-width:0}
-.bank-book{position:relative;overflow:hidden;border-radius:24px;padding:20px 20px 16px;color:#5B4330;
+.bank-book{position:relative;overflow:hidden;border-radius:24px;padding:20px 22px 18px;color:#fff;
   background:
-    radial-gradient(120% 80% at 0% 0%,rgba(255,255,255,.75),transparent 60%),
-    repeating-linear-gradient(115deg,rgba(120,90,60,.035) 0 2px,transparent 2px 9px),
-    linear-gradient(160deg,#FBF7EE 0%,#F3ECDD 100%);
-  border:1px solid #E7DDC9;box-shadow:var(--shadow)}
-.bank-book::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(180deg,var(--indigo),var(--peri))}
-.bb-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-left:6px}
-.bb-title{font-family:"Gaegu",var(--font);font-weight:700;font-size:30px;letter-spacing:2px;color:#6B4F36}
-.bb-owner{font-weight:700;font-size:13.5px;color:#8C7259}
-.bb-label{margin:14px 0 0 6px;font-size:13px;font-weight:800;color:#8C7259;letter-spacing:.5px}
-.bb-total{display:flex;align-items:baseline;gap:6px;padding-left:6px;line-height:1}
-.bb-total b{font-family:var(--display);font-weight:400;font-size:clamp(52px,16vw,68px);color:var(--indigo);letter-spacing:1px}
-.bb-total span{font-weight:800;font-size:20px;color:#6B4F36}
-.bb-sub{margin:6px 0 0 6px;font-size:13.5px;font-weight:700;color:#8C7259;min-height:20px}
-.bb-verse{margin:18px 0 0 6px;padding-top:12px;border-top:1.5px dashed rgba(120,90,60,.28);font-family:"Gaegu",var(--font);font-size:15px;color:#8C7259;line-height:1.4}
+    radial-gradient(circle at 88% 12%,rgba(255,214,140,.55) 0,rgba(255,214,140,.18) 18%,transparent 42%),
+    radial-gradient(120% 90% at 0% 100%,rgba(207,226,247,.22),transparent 55%),
+    linear-gradient(140deg,#2A2572 0%,#3D3796 48%,#6C7EE0 100%);
+  box-shadow:0 18px 36px -16px rgba(47,42,126,.7)}
+.bank-book::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.12);box-shadow:0 0 0 22px rgba(255,255,255,.04)}
+.bb-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bb-title{font-weight:800;font-size:20px;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
+.bb-title::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.bb-owner{font-weight:700;font-size:13px;color:rgba(255,255,255,.85);background:rgba(255,255,255,.14);padding:5px 11px;border-radius:999px}
+.bb-label{position:relative;margin:18px 0 2px;font-size:13px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.3px}
+.bb-total{position:relative;display:flex;align-items:baseline;gap:6px;line-height:1}
+.bb-total b{font-family:var(--display);font-weight:400;font-size:clamp(54px,16vw,70px);color:#fff;letter-spacing:1px;text-shadow:0 4px 18px rgba(20,22,58,.35)}
+.bb-total span{font-weight:800;font-size:20px;color:var(--sun)}
+.bb-sub{position:relative;margin-top:8px;font-size:13.5px;font-weight:700;color:var(--sun);min-height:20px}
+.bb-verse{position:relative;margin-top:16px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.3);font-size:13px;color:rgba(255,255,255,.78);line-height:1.5}
 .bank-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.bank-stats .stat{padding:10px 12px}
+.bank-stats .stat{padding:10px 12px;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7)}
 .bank-stats .stat b{font-size:19px}
 .bank-form{padding:18px}
 .bank-form h3{margin:0 0 14px;font-size:16.5px}
 .bank-row{display:grid;grid-template-columns:1.2fr 1fr;gap:10px}
 .bank-row .input{padding:0 12px}
 input[type=date].input{-webkit-appearance:none;appearance:none;min-width:0;display:flex;align-items:center}
-.bank-together{padding:14px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#FFF6DE,#FFF);font-size:13.5px;font-weight:600;color:#6B4B00}
+.quick-min .chip{background:var(--peri-soft);border-color:transparent;color:var(--indigo)}
+.bank-together{padding:14px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#FFF6DE,#fff);font-size:13.5px;font-weight:600;color:#6B4B00}
 .bank-together b{font-size:17px;color:#8A5B00}
-.ledger{padding:6px 0 4px;overflow:hidden}
-.ledger-row{display:grid;grid-template-columns:58px minmax(0,1fr) 56px 82px;gap:8px;align-items:center;padding:12px 14px;border-bottom:1px solid #ECE6DA;font-size:14px}
-.ledger-head{font-family:"Gaegu",var(--font);font-weight:700;font-size:15px;white-space:nowrap;color:#6B4F36;border-bottom:1.5px solid #CDBFA6;padding-top:10px;padding-bottom:10px}
+.ledger{padding:4px 0;overflow:hidden}
+.ledger-row{display:grid;grid-template-columns:58px minmax(0,1fr) 56px 82px;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
+.ledger-row:last-child{border-bottom:0}
+.ledger-head{font-weight:800;font-size:12.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.2px;padding-top:12px;padding-bottom:10px;background:rgba(220,226,251,.45)}
 .ledger-head span:nth-child(n+3),.ledger-row .m,.ledger-row .t{text-align:right}
 .ledger-row .d{font-weight:700;color:var(--ink-2);font-size:13px;line-height:1.3}
 .ledger-row .d small{display:block;font-weight:600;color:var(--ink-3);font-size:11.5px}
 .ledger-row .c{color:var(--ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:keep-all;overflow-wrap:anywhere}
 .ledger-row .m{font-weight:800;color:var(--peri)}
-.ledger-row .t{font-weight:800;color:#6B4F36}
+.ledger-row .t{font-family:var(--display);font-weight:400;font-size:17px;color:var(--indigo);letter-spacing:.3px}
+.ledger-row .t small{font-family:var(--font);font-weight:700;font-size:12px;margin-left:1px}
 button.ledger-row{width:100%;text-align:left;background:none;cursor:pointer;transition:background .15s}
-button.ledger-row:hover{background:#FAF7F0}
-button.ledger-row.new{animation:rowIn .8s ease}
+button.ledger-row:hover{background:rgba(220,226,251,.35)}
+button.ledger-row.new{animation:rowIn 1s ease}
 @keyframes rowIn{from{background:#FFF1CF}to{background:transparent}}
 .ledger-empty{padding:34px 16px;text-align:center;color:var(--ink-3);font-weight:600}
 .bank-guide{padding:4px 18px}
@@ -1840,7 +1845,7 @@ function renderBank(newId = null) {
       h('span', { class: 'd' }, d.md, h('small', {}, `(${d.wd})`)),
       h('span', { class: 'c' }, r.content),
       h('span', { class: 'm' }, `${r.minutes}분`),
-      h('span', { class: 't' }, `${r.total.toLocaleString()}분`)));
+      h('span', { class: 't' }, r.total.toLocaleString(), h('small', {}, '분'))));
   });
 }
 function countUp(el, from, to) {
