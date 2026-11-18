@@ -1442,7 +1442,9 @@ $('#giftBtn').onclick = () => {
 };
 
 /* 🎁 랜덤 기도제목 */
-const FEED_SELECT = 'id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus),prayer_reactions(emoji,user_id),prayer_comments(count)';
+// 작성자 소개: "인하대 · 공간정보공학과 22학번"
+const whoLine = a => [a?.campus, [a?.department, a?.entry_year ? `${a.entry_year}학번` : ''].filter(Boolean).join(' ')].filter(Boolean).join(' · ');
+const FEED_SELECT = 'id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus,department,entry_year),prayer_reactions(emoji,user_id),prayer_comments(count)';
 async function openRandomPrayer() {
   const scope = S.scope, campus = scope === 'campus' ? S.me.campus : null, family = scope === 'family' ? S.me.family : null;
   let seen = [], changed = false;
@@ -1569,7 +1571,7 @@ function prayerCard(r, onChange = null) {
   };
   async function loadComments() {
     cmtBox.innerHTML = ''; cmtBox.append(h('div', { style: 'padding:10px;display:grid;place-items:center' }, h('div', { class: 'spinner dark' })));
-    const { data } = await sb.from('prayer_comments').select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus)').eq('request_id', r.id).order('created_at');
+    const { data } = await sb.from('prayer_comments').select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus,department,entry_year)').eq('request_id', r.id).order('created_at');
     cmtBox.dataset.loaded = 1; cmtBox.innerHTML = '';
     const list = h('div');
     (data || []).forEach(c => list.append(commentEl(c)));
@@ -1580,7 +1582,7 @@ function prayerCard(r, onChange = null) {
     form.onsubmit = async e => {
       e.preventDefault(); const text = inp.value.trim(); if (!text) return;
       setBusy(send, true);
-      const { data: c, error } = await sb.from('prayer_comments').insert({ request_id: r.id, content: text }).select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus)').single();
+      const { data: c, error } = await sb.from('prayer_comments').insert({ request_id: r.id, content: text }).select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus,department,entry_year)').single();
       setBusy(send, false, '등록');
       if (error) return toast('댓글을 등록하지 못했어요');
       inp.value = ''; list.append(commentEl(c)); cmtCount++; paintCmtBtn(); onChange && onChange();
@@ -1590,7 +1592,7 @@ function prayerCard(r, onChange = null) {
   function commentEl(c) {
     const mineC = c.user_id === S.me.id;
     const row = h('div', { class: 'cmt' }, avatar(c.author?.name),
-      h('div', { class: 'body' }, h('b', {}, c.author?.name || ''), h('span', {}, `${c.author?.campus || ''} · ${timeAgo(c.created_at)}`), h('p', {}, c.content)),
+      h('div', { class: 'body' }, h('b', {}, c.author?.name || ''), h('span', {}, `${whoLine(c.author)} · ${timeAgo(c.created_at)}`), h('p', {}, c.content)),
       mineC ? h('button', { class: 'del', 'aria-label': '댓글 삭제' }, '삭제') : null);
     if (mineC) $('.del', row).onclick = async () => {
       if (!(await dialog({ title: '댓글을 삭제할까요?', ok: '삭제', cancel: '취소', danger: true }))) return;
@@ -1602,7 +1604,7 @@ function prayerCard(r, onChange = null) {
   }
 
   const head = h('div', { class: 'pr-head' }, avatar(name),
-    h('div', { class: 'who' }, h('b', {}, name + (mine ? ' (나)' : '')), h('span', {}, `${campus} · ${timeAgo(r.created_at)}${r.updated_at ? ' · 수정됨' : ''}`)),
+    h('div', { class: 'who' }, h('b', {}, name + (mine ? ' (나)' : '')), h('span', {}, whoLine(r.author) || campus), h('span', {}, `${timeAgo(r.created_at)}${r.updated_at ? ' · 수정됨' : ''}`)),
     mine ? h('button', { class: 'more-btn', html: ICON.more, 'aria-label': '더보기' }) : null);
   if (mine) $('.more-btn', head).onclick = () => {
     Sheet.show({
