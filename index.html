@@ -154,8 +154,8 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .sec-title p{margin:2px 0 0;color:var(--ink-2);font-size:13.5px}
 
 /* 하단 플로팅 내비게이션 */
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safe-b));z-index:30;width:min(calc(100% - 28px),440px);height:var(--nav-h);
-  display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:7px;border-radius:24px;
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safe-b));z-index:30;width:min(calc(100% - 28px),500px);height:var(--nav-h);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:7px;border-radius:24px;
   background:linear-gradient(180deg,rgba(255,255,255,.52),rgba(255,255,255,.34));
   backdrop-filter:blur(10px) saturate(1.8);-webkit-backdrop-filter:blur(10px) saturate(1.8);
   border:1px solid rgba(255,255,255,.7);box-shadow:0 14px 34px -12px rgba(31,28,90,.4),inset 0 1px 0 rgba(255,255,255,.6)}
@@ -353,6 +353,71 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .notice p{margin:0;color:var(--ink-2);font-size:14px;white-space:pre-wrap}
 .notice time{font-size:12px;color:var(--ink-3)}
 
+
+/* ---------- 섹션 4: 기도통장 (앱 색감: 남보라 · 페리윙클 · 해의 금빛) ---------- */
+.bank{display:grid;gap:14px}
+.bank-left,.bank-right{display:grid;gap:14px;align-content:start;min-width:0}
+.bank-book{position:relative;overflow:hidden;border-radius:24px;padding:20px 22px 18px;color:#fff;
+  background:
+    radial-gradient(circle at 88% 12%,rgba(255,214,140,.55) 0,rgba(255,214,140,.18) 18%,transparent 42%),
+    radial-gradient(120% 90% at 0% 100%,rgba(207,226,247,.22),transparent 55%),
+    linear-gradient(140deg,#2A2572 0%,#3D3796 48%,#6C7EE0 100%);
+  box-shadow:0 18px 36px -16px rgba(47,42,126,.7)}
+.bank-book::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.12);box-shadow:0 0 0 22px rgba(255,255,255,.04)}
+.bb-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bb-title{font-weight:800;font-size:20px;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
+.bb-title::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.bb-owner{font-weight:700;font-size:13px;color:rgba(255,255,255,.85);background:rgba(255,255,255,.14);padding:5px 11px;border-radius:999px}
+.bb-label{position:relative;margin:18px 0 2px;font-size:13px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.3px}
+.bb-total{position:relative;display:flex;align-items:baseline;gap:6px;line-height:1}
+.bb-total b{font-family:var(--display);font-weight:400;font-size:clamp(54px,16vw,70px);color:#fff;letter-spacing:1px;text-shadow:0 4px 18px rgba(20,22,58,.35)}
+.bb-total span{font-weight:800;font-size:20px;color:var(--sun)}
+.bb-sub{position:relative;margin-top:8px;font-size:13.5px;font-weight:700;color:var(--sun);min-height:20px}
+.bb-verse{position:relative;margin-top:16px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.3);font-size:13px;color:rgba(255,255,255,.78);line-height:1.5}
+.bank-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bank-stats .stat{padding:10px 12px;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7)}
+.bank-stats .stat b{font-size:19px}
+.bank-form{padding:18px}
+.bank-form h3{margin:0 0 14px;font-size:16.5px}
+.bank-row{display:grid;grid-template-columns:1.2fr 1fr;gap:10px}
+.bank-row .input{padding:0 12px}
+input[type=date].input{-webkit-appearance:none;appearance:none;min-width:0;display:flex;align-items:center}
+.quick-min .chip{background:var(--peri-soft);border-color:transparent;color:var(--indigo)}
+.bank-together{padding:14px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#FFF6DE,#fff);font-size:13.5px;font-weight:600;color:#6B4B00}
+.bank-together b{font-size:17px;color:#8A5B00}
+.ledger{padding:4px 0;overflow:hidden}
+.ledger-row{display:grid;grid-template-columns:58px minmax(0,1fr) 56px 82px;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
+.ledger-row:last-child{border-bottom:0}
+.ledger-head{font-weight:800;font-size:12.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.2px;padding-top:12px;padding-bottom:10px;background:rgba(220,226,251,.45)}
+.ledger-head span:nth-child(n+3),.ledger-row .m,.ledger-row .t{text-align:right}
+.ledger-row .d{font-weight:700;color:var(--ink-2);font-size:13px;line-height:1.3}
+.ledger-row .d small{display:block;font-weight:600;color:var(--ink-3);font-size:11.5px}
+.ledger-row .c{color:var(--ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:keep-all;overflow-wrap:anywhere}
+.ledger-row .m{font-weight:800;color:var(--peri)}
+.ledger-row .t{font-family:var(--display);font-weight:400;font-size:17px;color:var(--indigo);letter-spacing:.3px}
+.ledger-row .t small{font-family:var(--font);font-weight:700;font-size:12px;margin-left:1px}
+button.ledger-row{width:100%;text-align:left;background:none;cursor:pointer;transition:background .15s}
+button.ledger-row:hover{background:rgba(220,226,251,.35)}
+button.ledger-row.new{animation:rowIn 1s ease}
+@keyframes rowIn{from{background:#FFF1CF}to{background:transparent}}
+.ledger-empty{padding:34px 16px;text-align:center;color:var(--ink-3);font-weight:600}
+.fab-help{width:56px;min-width:56px;height:56px;padding:0;border-radius:50%;font-family:var(--display);font-weight:400;font-size:28px;line-height:1;
+  background:linear-gradient(145deg,var(--indigo-2),var(--peri))}
+.fab-help:hover{background:linear-gradient(145deg,var(--indigo),var(--peri))}
+#sec-bank{padding-bottom:76px}
+.bank-guide{display:grid;gap:12px}
+.bank-guide .g{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.bank-guide .g b{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--indigo)}
+.bank-guide .g b i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--peri-soft);display:grid;place-items:center;font-size:12.5px;font-weight:800}
+.bank-guide .g p{margin:6px 0 0;color:var(--ink-2);font-size:14.5px}
+.bank-guide .ex{margin-top:8px;display:inline-block;background:var(--sky-2);color:var(--indigo);font-weight:700;font-size:13px;padding:5px 10px;border-radius:999px}
+@media (min-width:900px){
+  .bank{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start;gap:20px}
+  .bank-left{position:sticky;top:80px}
+}
+@media (max-width:360px){.ledger-row{grid-template-columns:52px minmax(0,1fr) 50px 76px;gap:6px;padding:11px 10px;font-size:13px}}
+
 /* ---------- 반응형: 태블릿 / PC ---------- */
 @media (min-width:640px){
   main{padding-left:24px;padding-right:24px}
@@ -535,12 +600,51 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
         </div>
       </div>
     </section>
+    <!-- 섹션 4: 기도통장 -->
+    <section class="section" id="sec-bank">
+      <div class="bank">
+        <div class="bank-left">
+          <div class="bank-book">
+            <div class="bb-top"><span class="bb-title">기도통장</span><span class="bb-owner" id="bankOwner"></span></div>
+            <div class="bb-label">총 적립기도</div>
+            <div class="bb-total"><b id="bankTotal">0</b><span>분</span></div>
+            <div class="bb-sub" id="bankTotalSub">&nbsp;</div>
+            <div class="bb-verse">[마 6:6] 골방에 들어가 문을 닫고 은밀한 중에 계신 네 아버지께 기도하라</div>
+          </div>
+          <div class="bank-stats" id="bankStats"></div>
+          <form class="card bank-form" id="bankForm" novalidate>
+            <h3>오늘의 기도 적립하기</h3>
+            <div class="bank-row">
+              <div class="field"><label for="bk-date">기도날짜</label><input class="input" type="date" id="bk-date"></div>
+              <div class="field"><label for="bk-min">기도시간(분)</label><input class="input" id="bk-min" inputmode="numeric" pattern="[0-9]*" placeholder="예) 60" maxlength="4"></div>
+            </div>
+            <div class="chips quick-min" style="margin:-6px 0 12px">
+              <button type="button" class="chip" data-add="10">+10분</button>
+              <button type="button" class="chip" data-add="30">+30분</button>
+              <button type="button" class="chip" data-add="60">+1시간</button>
+              <button type="button" class="chip" data-add="0">지우기</button>
+            </div>
+            <div class="field"><label for="bk-content">기도내용</label><input class="input" id="bk-content" maxlength="200" placeholder="예) 개인, 캠퍼스, 교회"></div>
+            <button class="btn btn-primary btn-block" id="bankSave" type="submit">🙏 적립하기</button>
+          </form>
+        </div>
+        <div class="bank-right">
+          <div class="card bank-together" id="bankTogether" hidden></div>
+          <div class="ledger card">
+            <div class="ledger-row ledger-head"><span>날짜</span><span>기도내용</span><span>기도시간</span><span>총 적립기도</span></div>
+            <div id="ledgerBody"></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <button class="fab" id="addPrayerBtn" aria-label="기도제목 추가" hidden>
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     <span class="fab-label">기도제목 추가</span>
   </button>
+
+  <button class="fab fab-help" id="bankHelpBtn" aria-label="기도통장이란?" hidden>?</button>
 
   <nav class="nav" id="nav" aria-label="섹션 이동">
     <button data-go="journey" class="on" aria-label="기도 여정">
@@ -550,6 +654,10 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
     <button data-go="prayers" aria-label="기도제목">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.3-9.4C1.4 8 3.6 4.5 7.2 4.5c2 0 3.6 1.1 4.8 2.8 1.2-1.7 2.8-2.8 4.8-2.8 3.6 0 5.8 3.5 4.5 7.1C19.5 16.4 12 21 12 21z"/></svg>
       기도제목
+    </button>
+    <button data-go="bank" aria-label="기도통장">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11.5A2.5 2.5 0 0 1 19 6v14.5H6.5A2.5 2.5 0 0 1 4 18V4.5a1 1 0 0 1 1-1z"/><path d="M4 18a2.5 2.5 0 0 1 2.5-2.5H19M9 8h6M9 11.5h4"/></svg>
+      기도통장
     </button>
     <button data-go="info" aria-label="수련회 안내">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
@@ -1047,18 +1155,20 @@ function adminTools() {
 /* =========================================================
    라우팅 (하단 플로팅 버튼)
    ========================================================= */
-const SECTIONS = ['journey', 'prayers', 'info'];
+const SECTIONS = ['journey', 'prayers', 'bank', 'info'];
 function go(sec) {
   if (!SECTIONS.includes(sec)) sec = 'journey';
   S.section = sec;
   $$('.section').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
   $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   $('#addPrayerBtn').hidden = sec !== 'prayers';
+  $('#bankHelpBtn').hidden = sec !== 'bank';
   history.replaceState(history.state, '', location.pathname + location.search + '#' + sec);
   window.scrollTo(0, 0);
   if (sec === 'journey') loadJourney();
   if (sec === 'prayers') loadFeed(true);
   if (sec === 'info') loadInfo();
+  if (sec === 'bank') loadBank();
 }
 function route() { go((location.hash || '#journey').slice(1)); }
 $$('#nav button').forEach(b => b.addEventListener('click', async () => { if (Sheet.open) await Sheet.close(); go(b.dataset.go); }));
@@ -1678,6 +1788,131 @@ async function loadInfo() {
     h('h4', {}, n.pinned ? h('span', { class: 'badge b-peri' }, '고정') : null, n.title),
     n.body ? h('p', {}, n.body) : null, h('time', {}, timeAgo(n.created_at)))));
   S.infoLoaded = !info.error;
+}
+
+
+/* =========================================================
+   섹션 4: 기도통장
+   ========================================================= */
+const BANK = { rows: [], shownTotal: 0 };
+$('#bk-min').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 4); });
+$$('.quick-min [data-add]').forEach(b => b.addEventListener('click', () => {
+  const inp = $('#bk-min'), add = Number(b.dataset.add);
+  inp.value = add ? String(Math.min(1440, (Number(inp.value) || 0) + add)) : '';
+}));
+function bankDate(s) { const d = new Date(toUTC(s)); return { md: `${d.getUTCMonth() + 1}/${d.getUTCDate()}`, wd: WD[d.getUTCDay()] }; }
+function hm(min) { const hh = Math.floor(min / 60), mm = min % 60; return hh ? `${hh}시간${mm ? ' ' + mm + '분' : ''}` : `${mm}분`; }
+function weekStart(today) { const d = new Date(toUTC(today)); const back = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - back); return d.toISOString().slice(0, 10); }
+
+async function loadBank() {
+  $('#bankOwner').textContent = `${S.me.name} 님`;
+  const dateInp = $('#bk-date'); dateInp.max = kstToday(); if (!dateInp.value) dateInp.value = kstToday();
+  if (!BANK.rows.length) $('#ledgerBody').innerHTML = '<div class="ledger-empty"><div class="spinner dark" style="margin:auto"></div></div>';
+  const [res, sum] = await Promise.all([
+    sb.from('prayer_bank').select('id,pray_date,content,minutes,created_at').order('pray_date').order('created_at'),
+    sb.rpc('prayer_bank_summary'),
+  ]);
+  if (res.error) { $('#ledgerBody').innerHTML = '<div class="ledger-empty">기도통장을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</div>'; return; }
+  BANK.rows = res.data || [];
+  renderBank();
+  const t = sum.data && sum.data[0];
+  const box = $('#bankTogether');
+  if (t && Number(t.total_minutes) > 0) {
+    box.hidden = false; box.innerHTML = '';
+    box.append(h('span', { style: 'font-size:24px' }, '🕊️'), h('span', {}, '지금까지 ', h('b', {}, `${Number(t.people)}명`), '이 함께 ', h('b', {}, `${Number(t.total_minutes).toLocaleString()}분`), `(${hm(Number(t.total_minutes))})을 기도로 쌓았어요`));
+  } else box.hidden = true;
+}
+
+function renderBank(newId = null) {
+  const today = kstToday(), wk = weekStart(today);
+  let run = 0;
+  const withTotal = BANK.rows.map(r => ({ ...r, total: (run += r.minutes) }));
+  const total = run;
+  countUp($('#bankTotal'), BANK.shownTotal, total); BANK.shownTotal = total;
+  $('#bankTotalSub').textContent = total >= 60 ? `= ${hm(total)}` : (total ? '' : '첫 기도를 적립해 보세요');
+  const sumIf = f => BANK.rows.filter(f).reduce((a, r) => a + r.minutes, 0);
+  const st = $('#bankStats'); st.innerHTML = '';
+  [[`${BANK.rows.length}회`, '적립 횟수'], [`${sumIf(r => r.pray_date >= wk)}분`, '이번 주'], [`${sumIf(r => r.pray_date === today)}분`, '오늘']]
+    .forEach(([v, l]) => st.append(h('div', { class: 'stat' }, h('b', {}, v), h('span', {}, l))));
+  const body = $('#ledgerBody'); body.innerHTML = '';
+  if (!withTotal.length) { body.append(h('div', { class: 'ledger-empty' }, '아직 적립한 기도가 없어요.', h('br'), '위에서 첫 기도를 적립해 보세요 🙏')); return; }
+  withTotal.slice().reverse().forEach(r => {
+    const d = bankDate(r.pray_date);
+    body.append(h('button', { type: 'button', class: 'ledger-row' + (r.id === newId ? ' new' : ''), onclick: () => openBankEntry(r) },
+      h('span', { class: 'd' }, d.md, h('small', {}, `(${d.wd})`)),
+      h('span', { class: 'c' }, r.content),
+      h('span', { class: 'm' }, `${r.minutes}분`),
+      h('span', { class: 't' }, r.total.toLocaleString(), h('small', {}, '분'))));
+  });
+}
+function countUp(el, from, to) {
+  if (from === to) { el.textContent = to.toLocaleString(); return; }
+  const t0 = performance.now(), dur = 700;
+  const step = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = Math.round(from + (to - from) * e).toLocaleString(); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function validBank(date, content, minutes) {
+  if (!date) return '기도날짜를 선택해 주세요';
+  if (date > kstToday()) return '오늘 이후 날짜는 적립할 수 없어요';
+  if (!content) return '기도내용을 입력해 주세요';
+  if (!(minutes >= 1 && minutes <= 1440)) return '기도시간을 1~1440분 사이로 입력해 주세요';
+  return null;
+}
+$('#bankForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const date = $('#bk-date').value, content = $('#bk-content').value.trim(), minutes = Number($('#bk-min').value);
+  const bad = validBank(date, content, minutes); if (bad) return toast(bad);
+  const btn = $('#bankSave'); setBusy(btn, true);
+  const { data, error } = await sb.from('prayer_bank').insert({ pray_date: date, content, minutes }).select('id,pray_date,content,minutes,created_at').single();
+  setBusy(btn, false, '🙏 적립하기');
+  if (error) return toast('적립하지 못했어요. 다시 시도해 주세요');
+  BANK.rows.push(data);
+  BANK.rows.sort((a, b) => a.pray_date.localeCompare(b.pray_date) || a.created_at.localeCompare(b.created_at));
+  $('#bk-content').value = ''; $('#bk-min').value = '';
+  renderBank(data.id);
+  toast(`${minutes}분이 기도통장에 적립됐어요 🙏`);
+  loadBank();
+});
+$('#bankHelpBtn').onclick = () => {
+  const item = (n, t, p, ex) => h('div', { class: 'g' }, h('b', {}, h('i', {}, n), t), h('p', {}, p), ex ? h('span', { class: 'ex' }, ex) : null);
+  Sheet.show({
+    title: '기도통장이란?', sub: '하나님께 드리는 작은 기도도 차곡차곡 쌓여요',
+    body: h('div', { class: 'bank-guide' },
+      item('1', '기도통장', '각자의 자리에서 개인의 골방을 지키며 드린 기도를 시간으로 적립해, 하늘 통장에 기도를 쌓아가는 거예요.'),
+      item('2', '적립 방법', '기도한 시간을 분으로 적어요. 총 적립기도는 지금까지 쌓인 시간에 이번 기도시간이 더해져요.', '예) 1시간 기도 → 60분 적립'),
+      item('3', '무엇을 적나요?', "시간과 장소의 제한은 없어요. 다만 목적이 '개인의 골방'이라서 개인적으로 기도한 시간만 적어요.", '채플·교회 예배 ✕ · 채플 기도리트릿 ○')),
+    foot: h('button', { class: 'btn btn-primary', onclick: () => Sheet.close() }, '확인')
+  });
+};
+function openBankEntry(r) {
+  const date = h('input', { class: 'input', type: 'date', max: kstToday() }); date.value = r.pray_date;
+  const mins = h('input', { class: 'input', inputmode: 'numeric', maxlength: 4 }); mins.value = r.minutes;
+  mins.oninput = () => { mins.value = mins.value.replace(/[^0-9]/g, '').slice(0, 4); };
+  const content = h('input', { class: 'input', maxlength: 200 }); content.value = r.content;
+  const save = h('button', { class: 'btn btn-primary' }, '수정 완료');
+  const del = h('button', { class: 'btn btn-soft', style: 'color:var(--danger)' }, '삭제');
+  save.onclick = async () => {
+    const bad = validBank(date.value, content.value.trim(), Number(mins.value)); if (bad) return toast(bad);
+    setBusy(save, true);
+    const { error } = await sb.from('prayer_bank').update({ pray_date: date.value, content: content.value.trim(), minutes: Number(mins.value) }).eq('id', r.id);
+    setBusy(save, false, '수정 완료');
+    if (error) return toast('수정하지 못했어요');
+    await Sheet.close(); toast('수정했어요'); loadBank();
+  };
+  del.onclick = async () => {
+    if (!(await dialog({ title: '이 기록을 삭제할까요?', message: `${bankDate(r.pray_date).md} · ${r.content} · ${r.minutes}분`, ok: '삭제', cancel: '취소', danger: true }))) return;
+    const { error } = await sb.from('prayer_bank').delete().eq('id', r.id);
+    if (error) return toast('삭제하지 못했어요');
+    await Sheet.close(); toast('삭제했어요'); loadBank();
+  };
+  Sheet.show({
+    title: '기도 기록', sub: `${bankDate(r.pray_date).md} (${bankDate(r.pray_date).wd}) · 적립 후 총 ${r.total.toLocaleString()}분`,
+    body: h('div', {},
+      h('div', { class: 'bank-row' }, h('div', { class: 'field' }, h('label', {}, '기도날짜'), date), h('div', { class: 'field' }, h('label', {}, '기도시간(분)'), mins)),
+      h('div', { class: 'field' }, h('label', {}, '기도내용'), content)),
+    foot: [del, save]
+  });
 }
 
 /* =========================================================
