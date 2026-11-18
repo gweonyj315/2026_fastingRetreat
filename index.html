@@ -153,11 +153,10 @@ select.input{appearance:none;-webkit-appearance:none;background:#fff url("data:i
 .topbar{gap:10px}
 .topbar .logo{min-width:0}
 .topbar .logo b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#meName{white-space:nowrap}
+#meName{display:none} /* 프로필은 동그라미만 */
+.me-btn{padding:4px!important;gap:0!important}
 @media (max-width:430px){
   .topbar .logo b{font-size:clamp(16px,5vw,22px)}
-  .topbar:has(.bell-btn:not([hidden])) #meName{display:none}
-  .topbar:has(.bell-btn:not([hidden])) .me-btn{padding:4px}
 }
 .bell-btn{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--indigo);
   background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9);transition:transform .15s}
@@ -580,7 +579,7 @@ button.ledger-row.new{animation:rowIn 1s ease}
       <button class="bell-btn" id="bellBtn" hidden aria-label="함께 쌓은 기도 알림 다시 보기">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 4.5 1.8 6.2 2.5 7H3.5c.7-.8 2.5-2.5 2.5-7z"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0"/></svg>
       </button>
-      <button class="me-btn" id="meBtn"><span id="meName"></span><span class="avatar" id="meAvatar"></span></button>
+      <button class="me-btn" id="meBtn" aria-label="내 정보"><span id="meName"></span><span class="avatar" id="meAvatar"></span></button>
     </div>
   </header>
 
