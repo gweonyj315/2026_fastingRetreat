@@ -132,6 +132,12 @@ textarea.input{height:auto;min-height:150px;padding:14px;resize:vertical;line-he
 .picker.open .picker-list{display:block;animation:fadeUp .2s ease}
 .picker-opt{width:100%;min-height:46px;padding:0 12px;border-radius:10px;text-align:left;font-size:15.5px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between}
 .picker-opt:hover{background:#F3F4FB}
+.picker.disabled .picker-btn{background:#F2F3F8;border-color:#E4E6F0;cursor:not-allowed}
+.picker.disabled .picker-btn .ph{color:#9A9CB5}
+.input:disabled{background:#F2F3F8;border-color:#E4E6F0;color:var(--ink-3);cursor:not-allowed}
+.input:disabled::placeholder{color:#A6A8BE}
+.field.off label{color:var(--ink-3)}
+.notice-chip{display:inline-flex;align-items:center;gap:6px;margin-top:2px;font-size:12.5px;font-weight:700;color:#8A5B00;background:#FFF4D6;padding:5px 10px;border-radius:999px}
 .picker-opt.on{background:var(--peri-soft);color:var(--indigo);font-weight:800}
 select.input{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8CA8' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:38px}
 .form-err{background:#FDECEE;color:#A63842;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;font-weight:600}
@@ -529,6 +535,7 @@ button.ledger-row.new{animation:rowIn 1s ease}
       <div class="field">
         <label id="lbl-family">가족순</label>
         <div id="familyPickerSlot"></div>
+        <div class="hint" id="h-family"></div>
         <input type="hidden" id="su-family">
       </div>
       <div class="field">
@@ -538,7 +545,7 @@ button.ledger-row.new{animation:rowIn 1s ease}
       <div class="field">
         <label for="su-year">학번</label>
         <input class="input" id="su-year" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="예) 22" maxlength="2">
-        <div class="hint">입학년도 두 자리를 입력해 주세요 (예: 22학번 → 22)</div>
+        <div class="hint" id="h-year">입학년도 두 자리를 입력해 주세요 (예: 22학번 → 22)</div>
       </div>
       <button class="btn btn-primary btn-block" id="signupBtn" type="submit">가입하고 시작하기</button>
     </form>
@@ -872,12 +879,20 @@ function switchAuth(tab) {
   $('#loginForm').hidden = tab !== 'login';
   $('#signupForm').hidden = tab !== 'signup';
   if (tab === 'signup' && !$('#campusPickerSlot').firstChild) {
-    const pk = campusPicker(v => { $('#su-campus').value = v; });
+    const fk = familyPicker(v => { $('#su-family').value = v; applyStaffState(); }, '', () => $('#su-campus').value);
+    fk.el.id = 'familyPicker';
+    const pk = campusPicker(async v => {
+      $('#su-campus').value = v;
+      await loadFamilyMeta();
+      $('#su-family').value = '';
+      if (familiesOf(v).length) { fk.enable(); fk.value = ''; $('#h-family').innerHTML = ''; }
+      else { fk.disable(NOT_READY); $('#h-family').innerHTML = `<span class="notice-chip">🌱 ${v}의 가족순은 ${NOT_READY}. 가족순 없이 가입할 수 있어요</span>`; }
+      applyStaffState();
+    });
     pk.el.id = 'campusPicker';
     $('#campusPickerSlot').append(pk.el);
-    const fk = familyPicker(v => { $('#su-family').value = v; });
-    fk.el.id = 'familyPicker';
     $('#familyPickerSlot').append(fk.el);
+    fk.disable('캠퍼스를 먼저 선택해주세요');
   }
 }
 $('#tabLogin').onclick = () => switchAuth('login');
@@ -931,10 +946,21 @@ function checkPw2() {
 }
 $('#su-pw2').addEventListener('input', checkPw2);
 $('#su-year').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 2); });
+// 간사팀을 고르면 학과·학번 칸을 비활성화
+function applyStaffState() {
+  const staff = isStaffFamily($('#su-family').value);
+  [['#su-dept', '예) 컴퓨터공학과'], ['#su-year', '예) 22']].forEach(([sel, ph]) => {
+    const inp = $(sel); inp.disabled = staff; inp.placeholder = staff ? '간사팀은 입력하지 않아도 돼요' : ph;
+    if (staff) { inp.value = ''; inp.classList.remove('err'); }
+    inp.closest('.field').classList.toggle('off', staff);
+  });
+  $('#h-year').hidden = staff;
+}
 
 // 캠퍼스·가족순 목록 (DB의 campuses / families 표에서 불러오고, 실패하면 기본 목록 사용)
 const DEFAULT_CAMPUSES = ['인하대', '인천대', '가천대 메디컬캠퍼스', '청운/재능대', '인하공전', '경인여대', '경인교대'];
-const DEFAULT_FAMILIES = ['바다순', '푯대순', '은하순', '하심순', '콩순', '버팀순', '햅순', '하루순', '간사팀'];
+const DEFAULT_FAMILIES = ['바다순', '푯대순', '은하순', '하심순', '콩순', '버팀순', '햅순', '하루순', '간사팀']
+  .map(n => ({ name: n, campus: '인하대', is_staff: n === '간사팀' }));
 let CAMPUSES = null, FAMILIES = null;
 async function loadCampuses() {
   if (CAMPUSES) return CAMPUSES;
@@ -942,14 +968,22 @@ async function loadCampuses() {
   CAMPUSES = data && data.length ? data.map(r => r.name) : DEFAULT_CAMPUSES;
   return CAMPUSES;
 }
-async function loadFamilies() {
+// 가족순 목록: [{name, campus, is_staff}] (가족순은 캠퍼스별로 운영, 지금은 인하대만)
+async function loadFamilyMeta() {
   if (FAMILIES) return FAMILIES;
-  const { data } = await sb.from('families').select('name').order('sort_order');
-  FAMILIES = data && data.length ? data.map(r => r.name) : DEFAULT_FAMILIES;
+  const { data } = await sb.from('families').select('name,campus,is_staff').order('sort_order');
+  FAMILIES = data && data.length ? data : DEFAULT_FAMILIES;
   return FAMILIES;
 }
+async function loadFamilies() { return (await loadFamilyMeta()).map(f => f.name); }
+const familiesOf = campus => (FAMILIES || DEFAULT_FAMILIES).filter(f => f.campus === campus);
+const isStaffFamily = name => !!(FAMILIES || DEFAULT_FAMILIES).find(f => f.name === name && f.is_staff);
+const NOT_READY = '아직 준비가 되지 않았어요';
 const campusPicker = (onChange, initial = '') => makePicker({ placeholder: '캠퍼스를 선택해주세요', load: loadCampuses, onChange, initial });
-const familyPicker = (onChange, initial = '') => makePicker({ placeholder: '가족순을 선택해주세요', load: loadFamilies, onChange, initial });
+// campusOf: 지금 선택된 캠퍼스를 돌려주는 함수 → 그 캠퍼스의 가족순만 보여줌
+const familyPicker = (onChange, initial = '', campusOf = () => S.me && S.me.campus) => makePicker({
+  placeholder: '가족순을 선택해주세요', onChange, initial,
+  load: async () => { await loadFamilyMeta(); return familiesOf(campusOf()).map(f => f.name); } });
 // "○○를 선택해주세요"를 누르면 아래로 목록이 펼쳐지고 스크롤해서 고르는 선택 상자
 function makePicker({ placeholder, load, onChange, initial = '' }) {
   let value = initial || '', OPTIONS = null;
@@ -972,10 +1006,18 @@ function makePicker({ placeholder, load, onChange, initial = '' }) {
     setTimeout(() => list.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
   };
   const close = () => { el.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); };
-  btn.onclick = () => el.classList.contains('open') ? close() : open();
+  btn.onclick = () => { if (el.classList.contains('disabled')) return; el.classList.contains('open') ? close() : open(); };
   document.addEventListener('click', e => { if (!el.contains(e.target)) close(); });
   paintBtn(); load().then(o => { OPTIONS = o; });
-  return { el, get value() { return value; } };
+  const basePlaceholder = placeholder;
+  return {
+    el, get value() { return value; },
+    set value(v) { value = v || ''; paintBtn(); },
+    // 선택할 수 없게 막고 안내 문구를 보여줌 (msg 없으면 다시 선택 가능)
+    disable(msg) { close(); value = ''; placeholder = msg; el.classList.add('disabled'); btn.disabled = true; paintBtn(); },
+    enable() { placeholder = basePlaceholder; el.classList.remove('disabled'); btn.disabled = false; paintBtn(); },
+    get disabled() { return el.classList.contains('disabled'); },
+  };
 }
 
 $('#signupForm').addEventListener('submit', async e => {
@@ -999,9 +1041,10 @@ $('#signupForm').addEventListener('submit', async e => {
   if (v.password !== v.pw2) return fail('#su-pw2', '비밀번호가 일치하지 않아요.');
   if (!v.name) return fail('#su-name', '이름을 입력해 주세요.');
   if (!v.campus) return fail('#su-campus', '캠퍼스를 선택해 주세요.');
-  if (!v.family) return fail('#su-family', '가족순을 선택해 주세요.');
-  if (!v.department) return fail('#su-dept', '학과를 입력해 주세요.');
-  if (!/^[0-9]{2}$/.test(v.entry_year)) return fail('#su-year', '학번은 22처럼 두 자리 숫자로 입력해 주세요.');
+  const needFamily = familiesOf(v.campus).length > 0, staff = isStaffFamily(v.family);
+  if (needFamily && !v.family) return fail('#su-family', '가족순을 선택해 주세요.');
+  if (!staff && !v.department) return fail('#su-dept', '학과를 입력해 주세요.');
+  if (!staff && !/^[0-9]{2}$/.test(v.entry_year)) return fail('#su-year', '학번은 22처럼 두 자리 숫자로 입력해 주세요.');
 
   const btn = $('#signupBtn'); setBusy(btn, true);
   try {
@@ -1063,31 +1106,52 @@ async function enterApp(isNew = false) {
   $('#meName').textContent = S.me.name;
   $('#meAvatar').replaceWith(Object.assign(avatar(S.me.name), { id: 'meAvatar' }));
   $('#campusLabel').textContent = S.me.campus;
-  $('#familyLabel').textContent = S.me.family || '순 미입력';
+  $('#familyLabel').textContent = S.me.family || (familiesOf(S.me.campus).length ? '순 미입력' : '준비 중');
   paintGift();
   if (isNew) toast(`${S.me.name}님, 환영합니다! 🙏`);
   route();
-  if (!S.me.family || !S.me.department || !S.me.entry_year) setTimeout(() => openProfileForm(true), 400);
+  await loadFamilyMeta();
+  if (needsProfileInfo(S.me)) setTimeout(() => openProfileForm(true), 400);
+}
+// 꼭 입력해야 하는 정보가 비어 있는지: 가족순(인하대만), 학과·학번(간사팀 제외)
+function needsProfileInfo(me) {
+  const needFamily = familiesOf(me.campus).length > 0;
+  if (needFamily && !me.family) return true;
+  if (isStaffFamily(me.family)) return false;
+  return !me.department || !me.entry_year;
 }
 
 /* 가족순·학과·학번 입력/수정 (기존 회원은 처음 로그인할 때 꼭 입력) */
 function openProfileForm(required = false) {
   const me = S.me;
-  const fam = familyPicker(null, me.family || '');
+  const needFamily = familiesOf(me.campus).length > 0;
   const dept = h('input', { class: 'input', placeholder: '예) 컴퓨터공학과', maxlength: 30 }); dept.value = me.department || '';
   const year = h('input', { class: 'input', placeholder: '예) 22', inputmode: 'numeric', maxlength: 2 }); year.value = me.entry_year || '';
   year.oninput = () => { year.value = year.value.replace(/[^0-9]/g, '').slice(0, 2); };
+  const deptField = h('div', { class: 'field' }, h('label', {}, '학과'), dept);
+  const yearField = h('div', { class: 'field' }, h('label', {}, '학번 (입학년도 두 자리)'), year);
+  const staffState = famName => {
+    const staff = isStaffFamily(famName);
+    [[dept, deptField, '예) 컴퓨터공학과'], [year, yearField, '예) 22']].forEach(([inp, field, ph]) => {
+      inp.disabled = staff; inp.placeholder = staff ? '간사팀은 입력하지 않아도 돼요' : ph; if (staff) inp.value = ''; field.classList.toggle('off', staff);
+    });
+  };
+  const fam = familyPicker(v => staffState(v), me.family || '');
+  if (!needFamily) fam.disable(NOT_READY);
+  staffState(me.family);
   const save = h('button', { class: 'btn btn-primary' }, '저장하기');
   save.onclick = async () => {
-    if (!fam.value) return toast('가족순을 선택해 주세요');
-    if (!dept.value.trim()) return toast('학과를 입력해 주세요');
-    if (!/^[0-9]{2}$/.test(year.value)) return toast('학번은 22처럼 두 자리로 입력해 주세요');
+    const staff = isStaffFamily(fam.value);
+    if (needFamily && !fam.value) return toast('가족순을 선택해 주세요');
+    if (!staff && !dept.value.trim()) return toast('학과를 입력해 주세요');
+    if (!staff && !/^[0-9]{2}$/.test(year.value)) return toast('학번은 22처럼 두 자리로 입력해 주세요');
     setBusy(save, true);
-    const { error } = await sb.rpc('update_my_profile', { p_family: fam.value, p_department: dept.value, p_entry_year: year.value });
+    const { error } = await sb.rpc('update_my_profile', { p_family: fam.value || null, p_department: dept.value, p_entry_year: year.value });
     setBusy(save, false, '저장하기');
     if (error) return toast(error.code === '23505' ? '같은 캠퍼스·학과·학번·이름의 회원이 이미 있어요. 대표단에 문의해 주세요' : (error.message || '저장하지 못했어요'));
-    Object.assign(S.me, { family: fam.value, department: dept.value.trim().replace(/\s+/g, ' '), entry_year: year.value });
-    $('#familyLabel').textContent = S.me.family; paintGift();
+    Object.assign(S.me, staff ? { family: fam.value, department: null, entry_year: null }
+      : { family: fam.value || null, department: dept.value.trim().replace(/\s+/g, ' '), entry_year: year.value });
+    $('#familyLabel').textContent = S.me.family || '준비 중'; paintGift();
     if (S.section === 'prayers') loadFeed(true);
     Sheet.locked = false; await Sheet.close(); toast('정보를 저장했어요');
   };
@@ -1095,7 +1159,10 @@ function openProfileForm(required = false) {
   Sheet.show({
     title: required ? '정보를 한 번만 입력해 주세요' : '내 정보 수정',
     sub: required ? '가족순·학과·학번이 새로 추가되었어요' : `${me.name} · ${me.campus}`,
-    body: h('div', {}, h('div', { class: 'field' }, lab('가족순'), fam.el), h('div', { class: 'field' }, lab('학과'), dept), h('div', { class: 'field' }, lab('학번 (입학년도 두 자리)'), year)),
+    body: h('div', {},
+      h('div', { class: 'field' + (needFamily ? '' : ' off') }, lab('가족순'), fam.el,
+        needFamily ? null : h('div', { class: 'hint' }, h('span', { class: 'notice-chip' }, `🌱 ${me.campus}의 가족순은 ${NOT_READY}`))),
+      deptField, yearField),
     foot: save, locked: required
   });
 }
@@ -1454,7 +1521,7 @@ async function openAdminProgress() {
       const row = h('div', { class: 'prog-row' },
         avatar(r.name),
         h('div', { class: 'who' },
-          h('b', {}, r.name + (isMe ? ' (나)' : '')), h('span', {}, `${r.campus} · ${r.family || '순 미입력'}`), h('span', {}, `${r.department || '학과 미입력'}${r.entry_year ? ' · ' + r.entry_year + '학번' : ''} · @${r.username}` + (r.partial ? ` · 진행 중 ${r.partial}일` : '') + (r.last_prayed_at ? ` · 최근 ${timeAgo(r.last_prayed_at)}` : '')),
+          h('b', {}, r.name + (isMe ? ' (나)' : '')), h('span', {}, `${r.campus} · ${r.family || '순 미입력'}`), h('span', {}, `${isStaffFamily(r.family) ? '간사' : (r.department || '학과 미입력')}${r.entry_year ? ' · ' + r.entry_year + '학번' : ''} · @${r.username}` + (r.partial ? ` · 진행 중 ${r.partial}일` : '') + (r.last_prayed_at ? ` · 최근 ${timeAgo(r.last_prayed_at)}` : '')),
           h('div', { class: 'bar' }, h('i', { style: `width:${Math.min(r.completed, 30) / 30 * 100}%` }))),
         h('div', { class: 'num' }, String(r.completed), h('small', {}, ' /30')),
         isMe ? null : h('button', { class: 'kick-btn', 'aria-label': `${r.name} 강제탈퇴`, onclick: () => kickMember(r, row) }, '탈퇴'));
@@ -1564,8 +1631,9 @@ $('#giftBtn').onclick = () => {
 
 /* 🎁 랜덤 기도제목 */
 // 작성자 소개: "인하대 · 공간정보공학과 22학번"
-const whoLine = a => [a?.campus, [a?.department, a?.entry_year ? `${a.entry_year}학번` : ''].filter(Boolean).join(' ')].filter(Boolean).join(' · ');
-const FEED_SELECT = 'id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus,department,entry_year),prayer_reactions(emoji,user_id),prayer_comments(count)';
+const whoLine = a => isStaffFamily(a?.family) ? [a?.campus, '간사'].filter(Boolean).join(' · ')
+  : [a?.campus, [a?.department, a?.entry_year ? `${a.entry_year}학번` : ''].filter(Boolean).join(' ')].filter(Boolean).join(' · ');
+const FEED_SELECT = 'id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus,family,department,entry_year),prayer_reactions(emoji,user_id),prayer_comments(count)';
 async function openRandomPrayer() {
   const scope = S.scope, campus = scope === 'campus' ? S.me.campus : null, family = scope === 'family' ? S.me.family : null;
   let seen = [], changed = false;
@@ -1623,8 +1691,13 @@ async function loadFeed(reset) {
   const scope = S.scope;
   if (scope === 'family' && !S.me.family) {
     feed.innerHTML = ''; $('#moreBtn').hidden = true;
-    feed.append(h('div', { class: 'empty', style: 'grid-column:1/-1' }, h('div', { class: 'ic' }, '🌱'), '가족순을 먼저 입력해 주세요.',
-      h('div', { style: 'margin-top:12px' }, h('button', { class: 'btn btn-primary btn-sm', onclick: () => openProfileForm(false) }, '가족순 입력하기'))));
+    if (!familiesOf(S.me.campus).length) {
+      feed.append(h('div', { class: 'empty', style: 'grid-column:1/-1' }, h('div', { class: 'ic' }, '🌱'), `${S.me.campus}의 가족순은 ${NOT_READY}.`,
+        h('div', { style: 'font-size:13px;margin-top:4px' }, '준비되면 이곳에서 우리 순 기도제목을 볼 수 있어요.')));
+    } else {
+      feed.append(h('div', { class: 'empty', style: 'grid-column:1/-1' }, h('div', { class: 'ic' }, '🌱'), '가족순을 먼저 입력해 주세요.',
+        h('div', { style: 'margin-top:12px' }, h('button', { class: 'btn btn-primary btn-sm', onclick: () => openProfileForm(false) }, '가족순 입력하기'))));
+    }
     return;
   }
   S.feedLoading = true;
@@ -1692,7 +1765,7 @@ function prayerCard(r, onChange = null) {
   };
   async function loadComments() {
     cmtBox.innerHTML = ''; cmtBox.append(h('div', { style: 'padding:10px;display:grid;place-items:center' }, h('div', { class: 'spinner dark' })));
-    const { data } = await sb.from('prayer_comments').select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus,department,entry_year)').eq('request_id', r.id).order('created_at');
+    const { data } = await sb.from('prayer_comments').select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus,family,department,entry_year)').eq('request_id', r.id).order('created_at');
     cmtBox.dataset.loaded = 1; cmtBox.innerHTML = '';
     const list = h('div');
     (data || []).forEach(c => list.append(commentEl(c)));
@@ -1703,7 +1776,7 @@ function prayerCard(r, onChange = null) {
     form.onsubmit = async e => {
       e.preventDefault(); const text = inp.value.trim(); if (!text) return;
       setBusy(send, true);
-      const { data: c, error } = await sb.from('prayer_comments').insert({ request_id: r.id, content: text }).select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus,department,entry_year)').single();
+      const { data: c, error } = await sb.from('prayer_comments').insert({ request_id: r.id, content: text }).select('id,content,created_at,user_id,author:profiles!prayer_comments_user_id_fkey(name,campus,family,department,entry_year)').single();
       setBusy(send, false, '등록');
       if (error) return toast('댓글을 등록하지 못했어요');
       inp.value = ''; list.append(commentEl(c)); cmtCount++; paintCmtBtn(); onChange && onChange();
