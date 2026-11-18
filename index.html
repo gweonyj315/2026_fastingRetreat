@@ -815,7 +815,7 @@ $('#su-year').addEventListener('input', e => { e.target.value = e.target.value.r
 
 // 캠퍼스·가족순 목록 (DB의 campuses / families 표에서 불러오고, 실패하면 기본 목록 사용)
 const DEFAULT_CAMPUSES = ['인하대', '인천대', '가천대 메디컬캠퍼스', '청운/재능대', '인하공전', '경인여대', '경인교대'];
-const DEFAULT_FAMILIES = ['바다순', '푯대순', '은하순', '하심순', '콩순', '버팀순', '햅순', '하루순'];
+const DEFAULT_FAMILIES = ['바다순', '푯대순', '은하순', '하심순', '콩순', '버팀순', '햅순', '하루순', '간사팀'];
 let CAMPUSES = null, FAMILIES = null;
 async function loadCampuses() {
   if (CAMPUSES) return CAMPUSES;
