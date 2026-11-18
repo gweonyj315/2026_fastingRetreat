@@ -149,6 +149,21 @@ select.input{appearance:none;-webkit-appearance:none;background:#fff url("data:i
 .topbar .logo{display:flex;flex-direction:column;line-height:1}
 .topbar .logo b{font-family:var(--display);font-weight:400;color:var(--indigo);font-size:22px;letter-spacing:.4px}
 .topbar .logo span{font-size:11.5px;color:var(--ink-2);font-weight:700;margin-top:4px}
+.top-actions{display:flex;align-items:center;gap:8px;flex:none}
+.topbar{gap:10px}
+.topbar .logo{min-width:0}
+.topbar .logo b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#meName{white-space:nowrap}
+@media (max-width:430px){
+  .topbar .logo b{font-size:clamp(16px,5vw,22px)}
+  .topbar:has(.bell-btn:not([hidden])) #meName{display:none}
+  .topbar:has(.bell-btn:not([hidden])) .me-btn{padding:4px}
+}
+.bell-btn{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--indigo);
+  background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9);transition:transform .15s}
+.bell-btn:active{transform:scale(.92)}
+.bell-btn.ring svg{animation:bellRing .7s ease;transform-origin:50% 15%}
+@keyframes bellRing{0%,100%{transform:none}20%{transform:rotate(16deg)}40%{transform:rotate(-14deg)}60%{transform:rotate(9deg)}80%{transform:rotate(-5deg)}}
 .me-btn{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9);font-weight:700;font-size:13.5px;color:var(--ink-2)}
 .avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;flex:none}
 main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + var(--safe-b))}
@@ -556,7 +571,12 @@ button.ledger-row.new{animation:rowIn 1s ease}
 <div id="app" hidden>
   <header class="topbar">
     <div class="logo"><b>NO WAY? GOD'S WAY!</b><span>2026 CCC 경인금식수련회</span></div>
-    <button class="me-btn" id="meBtn"><span id="meName"></span><span class="avatar" id="meAvatar"></span></button>
+    <div class="top-actions">
+      <button class="bell-btn" id="bellBtn" hidden aria-label="함께 쌓은 기도 알림 다시 보기">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 4.5 1.8 6.2 2.5 7H3.5c.7-.8 2.5-2.5 2.5-7z"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="me-btn" id="meBtn"><span id="meName"></span><span class="avatar" id="meAvatar"></span></button>
+    </div>
   </header>
 
   <main>
@@ -1240,6 +1260,7 @@ function go(sec) {
   $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   $('#addPrayerBtn').hidden = sec !== 'prayers';
   $('#bankHelpBtn').hidden = sec !== 'bank';
+  $('#bellBtn').hidden = sec !== 'bank';
   history.replaceState(history.state, '', location.pathname + location.search + '#' + sec);
   window.scrollTo(0, 0);
   if (sec === 'journey') loadJourney();
@@ -1899,12 +1920,22 @@ async function loadBank() {
   BANK.rows = res.data || [];
   renderBank();
   const t = sum.data && sum.data[0];
-  if (t && Number(t.total_minutes) > 0 && S.section === 'bank') {
-    const tot = Number(t.total_minutes);
-    showTopNoti('🕊️', '함께 쌓은 기도', h('p', {}, '지금까지 ', h('b', {}, `${Number(t.people)}명`), '이 함께 ',
-      h('b', {}, `${tot.toLocaleString()}분`), tot >= 60 ? `(${hm(tot)})` : '', '을 기도로 쌓았어요'));
-  }
+  BANK.summary = t || null;
+  if (t && Number(t.total_minutes) > 0 && S.section === 'bank') showBankNoti();
 }
+// 함께 쌓은 기도 알림 (상단 종 버튼으로 다시 볼 수 있음)
+function showBankNoti() {
+  const t = BANK.summary, tot = t ? Number(t.total_minutes) : 0;
+  if (!tot) return showTopNoti('🕊️', '함께 쌓은 기도', h('p', {}, '아직 함께 쌓은 기도가 없어요. 첫 기도를 적립해 보세요!'));
+  showTopNoti('🕊️', '함께 쌓은 기도', h('p', {}, '지금까지 ', h('b', {}, `${Number(t.people)}명`), '이 함께 ',
+    h('b', {}, `${tot.toLocaleString()}분`), tot >= 60 ? `(${hm(tot)})` : '', '을 기도로 쌓았어요'));
+}
+$('#bellBtn').onclick = async () => {
+  const b = $('#bellBtn'); b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring');
+  const { data } = await sb.rpc('prayer_bank_summary'); // 최신 합계로 다시 보여줌
+  if (data) BANK.summary = data[0] || null;
+  showBankNoti();
+};
 
 /* 맨 위에서 내려왔다가 몇 초 뒤 올라가는 알림 */
 let notiTimer;
