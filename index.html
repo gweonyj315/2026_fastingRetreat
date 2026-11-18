@@ -412,6 +412,8 @@ input[type=date].input{-webkit-appearance:none;appearance:none;min-width:0;displ
   border:1px solid rgba(255,255,255,.95);box-shadow:0 16px 36px -14px rgba(31,28,90,.45);
   transform:translate(-50%,calc(-100% - 30px));opacity:0;transition:transform .5s cubic-bezier(.2,1.25,.35,1),opacity .3s;pointer-events:none}
 .top-noti.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.top-noti{touch-action:none;user-select:none;-webkit-user-select:none}
+.top-noti.swiped{transition:transform .4s ease-out,opacity .35s ease-out}
 .top-noti.fold:not(.on){transform:translate(calc(-50% + var(--fx,0px)),var(--fy,0px)) scale(.08);opacity:0;
   transition:transform .45s cubic-bezier(.5,0,.75,0),opacity .45s ease-in}
 .bell-btn.has-new::after{content:"";position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:#E8505B;box-shadow:0 0 0 2px #fff}
@@ -1961,16 +1963,61 @@ $('#bellBtn').onclick = async () => {
 let notiTimer;
 function showTopNoti(icon, title, body, ms = 4500) {
   let el = $('#topNoti');
-  if (!el) { el = h('div', { class: 'top-noti', id: 'topNoti', role: 'status', 'aria-live': 'polite' }); el.onclick = () => foldNoti(el); document.body.append(el); }
+  if (!el) {
+    el = h('div', { class: 'top-noti', id: 'topNoti', role: 'status', 'aria-live': 'polite' });
+    el.onclick = () => { if (el.dataset.dragged) { delete el.dataset.dragged; return; } foldNoti(el); };
+    attachNotiSwipe(el);
+    document.body.append(el);
+  }
+  el.style.transform = ''; el.style.opacity = ''; el.classList.remove('swiped');
   el.innerHTML = '';
   el.append(h('span', { class: 'ic' }, icon), h('div', { class: 'tx' }, h('small', {}, h('span', {}, title), h('span', {}, '지금')), body));
   el.classList.remove('on'); void el.offsetWidth;
   requestAnimationFrame(() => el.classList.add('on'));
   el.classList.remove('fold');
   clearTimeout(notiTimer); notiTimer = setTimeout(() => foldNoti(el), ms);
-  let y0 = null; // 위로 쓸어 올리면 닫힘
-  el.ontouchstart = e => { y0 = e.touches[0].clientY; };
-  el.ontouchmove = e => { if (y0 != null && e.touches[0].clientY - y0 < -20) { foldNoti(el); y0 = null; } };
+}
+// 알림을 옆으로 밀면 그 방향으로 사라짐 (위로 밀면 종으로 접힘)
+function attachNotiSwipe(el) {
+  let x0 = null, y0 = null, dx = 0, mode = null;
+  el.addEventListener('pointerdown', e => {
+    if (!el.classList.contains('on')) return;
+    x0 = e.clientX; y0 = e.clientY; dx = 0; mode = null;
+    clearTimeout(notiTimer);
+    try { el.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  el.addEventListener('pointermove', e => {
+    if (x0 == null) return;
+    const mx = e.clientX - x0, my = e.clientY - y0;
+    if (!mode && (Math.abs(mx) > 8 || Math.abs(my) > 8)) mode = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+    if (mode === 'x') {
+      dx = mx;
+      el.style.transition = 'none';
+      el.style.transform = `translate(calc(-50% + ${dx}px), 0) rotate(${dx / 40}deg)`;
+      el.style.opacity = String(Math.max(0, 1 - Math.abs(dx) / 260));
+    } else if (mode === 'y' && my < -20) { x0 = null; el.dataset.dragged = 1; foldNoti(el); }
+  });
+  const end = () => {
+    if (x0 == null) return;
+    x0 = null;
+    if (mode) el.dataset.dragged = 1;
+    el.style.transition = '';
+    if (mode === 'x' && Math.abs(dx) > 70) {
+      const dir = dx > 0 ? 1 : -1;
+      el.classList.add('swiped');
+      el.style.transform = `translate(calc(-50% + ${dir * 120}vw), 0) rotate(${dir * 12}deg)`;
+      el.style.opacity = '0';
+      el.classList.remove('on');
+      setTimeout(() => { el.classList.remove('swiped'); el.style.transform = ''; el.style.opacity = ''; }, 450);
+    } else if (mode === 'x') {
+      el.style.transform = ''; el.style.opacity = '';
+      notiTimer = setTimeout(() => foldNoti(el), 2500);
+    } else if (!mode) {
+      notiTimer = setTimeout(() => foldNoti(el), 2500);
+    }
+  };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
 }
 // 알림을 오른쪽 위 종 아이콘 쪽으로 접어 넣음
 function foldNoti(el) {
