@@ -740,11 +740,12 @@ const PAGE = 20;
 const toEmail = id => `${id.trim().toLowerCase()}@${EMAIL_DOMAIN}`;
 
 $$('[data-eye]').forEach(b => {
-  b.innerHTML = ICON.eye;
+  b.innerHTML = ICON.eyeOff; // 숨김 상태: 빗금 친 눈
   b.addEventListener('click', () => {
     const inp = document.getElementById(b.dataset.eye);
     const show = inp.type === 'password'; inp.type = show ? 'text' : 'password';
-    b.innerHTML = show ? ICON.eyeOff : ICON.eye;
+    b.innerHTML = show ? ICON.eye : ICON.eyeOff; // 보이는 상태: 뜬 눈
+    b.setAttribute('aria-label', show ? '비밀번호 숨기기' : '비밀번호 보기');
   });
 });
 function switchAuth(tab) {
