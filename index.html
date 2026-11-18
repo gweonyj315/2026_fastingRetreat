@@ -384,8 +384,19 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .bank-row .input{padding:0 12px}
 input[type=date].input{-webkit-appearance:none;appearance:none;min-width:0;display:flex;align-items:center}
 .quick-min .chip{background:var(--peri-soft);border-color:transparent;color:var(--indigo)}
-.bank-together{padding:14px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#FFF6DE,#fff);font-size:13.5px;font-weight:600;color:#6B4B00}
-.bank-together b{font-size:17px;color:#8A5B00}
+/* 위에서 내려오는 알림 배너 */
+.top-noti{position:fixed;left:50%;top:calc(10px + var(--safe-t));z-index:75;width:min(calc(100% - 24px),440px);
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:20px;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.95);box-shadow:0 16px 36px -14px rgba(31,28,90,.45);
+  transform:translate(-50%,calc(-100% - 30px));opacity:0;transition:transform .5s cubic-bezier(.2,1.25,.35,1),opacity .3s;pointer-events:none}
+.top-noti.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.top-noti .ic{flex:none;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:22px;
+  background:linear-gradient(145deg,#FFF3D3,#FFE2A0);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+.top-noti .tx{flex:1;min-width:0;line-height:1.4}
+.top-noti .tx small{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.top-noti .tx p{margin:2px 0 0;font-size:14px;font-weight:600;color:var(--ink)}
+.top-noti .tx b{color:var(--indigo)}
 .ledger{padding:4px 0;overflow:hidden}
 .ledger-row{display:grid;grid-template-columns:58px minmax(0,1fr) 56px 82px;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
 .ledger-row:last-child{border-bottom:0}
@@ -629,7 +640,6 @@ button.ledger-row.new{animation:rowIn 1s ease}
           </form>
         </div>
         <div class="bank-right">
-          <div class="card bank-together" id="bankTogether" hidden></div>
           <div class="ledger card">
             <div class="ledger-row ledger-head"><span>날짜</span><span>기도내용</span><span>기도시간</span><span>총 적립기도</span></div>
             <div id="ledgerBody"></div>
@@ -1816,13 +1826,27 @@ async function loadBank() {
   BANK.rows = res.data || [];
   renderBank();
   const t = sum.data && sum.data[0];
-  const box = $('#bankTogether');
-  if (t && Number(t.total_minutes) > 0) {
-    box.hidden = false; box.innerHTML = '';
-    box.append(h('span', { style: 'font-size:24px' }, '🕊️'), h('span', {}, '지금까지 ', h('b', {}, `${Number(t.people)}명`), '이 함께 ', h('b', {}, `${Number(t.total_minutes).toLocaleString()}분`), `(${hm(Number(t.total_minutes))})을 기도로 쌓았어요`));
-  } else box.hidden = true;
+  if (t && Number(t.total_minutes) > 0 && S.section === 'bank') {
+    const tot = Number(t.total_minutes);
+    showTopNoti('🕊️', '함께 쌓은 기도', h('p', {}, '지금까지 ', h('b', {}, `${Number(t.people)}명`), '이 함께 ',
+      h('b', {}, `${tot.toLocaleString()}분`), tot >= 60 ? `(${hm(tot)})` : '', '을 기도로 쌓았어요'));
+  }
 }
 
+/* 맨 위에서 내려왔다가 몇 초 뒤 올라가는 알림 */
+let notiTimer;
+function showTopNoti(icon, title, body, ms = 4500) {
+  let el = $('#topNoti');
+  if (!el) { el = h('div', { class: 'top-noti', id: 'topNoti', role: 'status', 'aria-live': 'polite' }); el.onclick = () => el.classList.remove('on'); document.body.append(el); }
+  el.innerHTML = '';
+  el.append(h('span', { class: 'ic' }, icon), h('div', { class: 'tx' }, h('small', {}, h('span', {}, title), h('span', {}, '지금')), body));
+  el.classList.remove('on'); void el.offsetWidth;
+  requestAnimationFrame(() => el.classList.add('on'));
+  clearTimeout(notiTimer); notiTimer = setTimeout(() => el.classList.remove('on'), ms);
+  let y0 = null; // 위로 쓸어 올리면 닫힘
+  el.ontouchstart = e => { y0 = e.touches[0].clientY; };
+  el.ontouchmove = e => { if (y0 != null && e.touches[0].clientY - y0 < -20) { el.classList.remove('on'); y0 = null; } };
+}
 function renderBank(newId = null) {
   const today = kstToday(), wk = weekStart(today);
   let run = 0;
