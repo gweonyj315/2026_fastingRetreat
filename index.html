@@ -504,8 +504,8 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
     <section class="section" id="sec-prayers">
       <div class="seg" id="scopeSeg">
         <button data-scope="me" class="on">개인<small>내 기도제목</small></button>
+        <button data-scope="family">가족순<small id="familyLabel">우리 순</small></button>
         <button data-scope="campus">캠퍼스<small id="campusLabel">우리 캠퍼스</small></button>
-        <button data-scope="all">지구<small>경인·인천 전체</small></button>
       </div>
       <button class="card gift-bar" id="giftBtn" hidden aria-label="랜덤 기도제목 받기">
         <span class="gift" aria-hidden="true">🎁</span>
@@ -944,6 +944,7 @@ async function enterApp(isNew = false) {
   $('#meName').textContent = S.me.name;
   $('#meAvatar').replaceWith(Object.assign(avatar(S.me.name), { id: 'meAvatar' }));
   $('#campusLabel').textContent = S.me.campus;
+  $('#familyLabel').textContent = S.me.family || '순 미입력';
   paintGift();
   if (isNew) toast(`${S.me.name}님, 환영합니다! 🙏`);
   route();
@@ -967,6 +968,8 @@ function openProfileForm(required = false) {
     setBusy(save, false, '저장하기');
     if (error) return toast(error.code === '23505' ? '같은 캠퍼스·학과·학번·이름의 회원이 이미 있어요. 대표단에 문의해 주세요' : (error.message || '저장하지 못했어요'));
     Object.assign(S.me, { family: fam.value, department: dept.value.trim().replace(/\s+/g, ' '), entry_year: year.value });
+    $('#familyLabel').textContent = S.me.family; paintGift();
+    if (S.section === 'prayers') loadFeed(true);
     Sheet.locked = false; await Sheet.close(); toast('정보를 저장했어요');
   };
   const lab = t => h('label', {}, t);
@@ -1428,10 +1431,10 @@ $$('#scopeSeg button').forEach(b => b.addEventListener('click', () => {
   loadFeed(true);
 }));
 function paintGift() {
-  $('#giftBtn').hidden = S.scope === 'me';
+  $('#giftBtn').hidden = S.scope === 'me' || (S.scope === 'family' && !S.me.family);
   $('#giftSub').textContent = S.scope === 'campus'
     ? `${S.me.campus} 기도제목 하나를 선물처럼 받아 기도해요`
-    : '경인·인천 지구 기도제목 하나를 선물처럼 받아 기도해요';
+    : `${S.me.family || '우리 순'} 기도제목 하나를 선물처럼 받아 기도해요`;
 }
 $('#giftBtn').onclick = () => {
   const b = $('#giftBtn'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
@@ -1441,13 +1444,13 @@ $('#giftBtn').onclick = () => {
 /* 🎁 랜덤 기도제목 */
 const FEED_SELECT = 'id,content,created_at,updated_at,user_id,campus,author:profiles!prayer_requests_user_id_fkey(name,campus),prayer_reactions(emoji,user_id),prayer_comments(count)';
 async function openRandomPrayer() {
-  const scope = S.scope, campus = scope === 'campus' ? S.me.campus : null;
+  const scope = S.scope, campus = scope === 'campus' ? S.me.campus : null, family = scope === 'family' ? S.me.family : null;
   let seen = [], changed = false;
-  const scopeName = scope === 'campus' ? S.me.campus : '경인·인천 지구';
+  const scopeName = scope === 'campus' ? S.me.campus : S.me.family;
   async function pick() {
-    let { data: id, error } = await sb.rpc('random_prayer_request', { p_campus: campus, p_exclude: seen });
+    let { data: id, error } = await sb.rpc('random_prayer_request', { p_campus: campus, p_family: family, p_exclude: seen });
     if (error) { toast('기도제목을 불러오지 못했어요'); return null; }
-    if (!id && seen.length) { seen = []; toast('모든 기도제목을 한 바퀴 돌았어요. 처음부터 다시 뽑을게요'); ({ data: id } = await sb.rpc('random_prayer_request', { p_campus: campus, p_exclude: [] })); }
+    if (!id && seen.length) { seen = []; toast('모든 기도제목을 한 바퀴 돌았어요. 처음부터 다시 뽑을게요'); ({ data: id } = await sb.rpc('random_prayer_request', { p_campus: campus, p_family: family, p_exclude: [] })); }
     if (!id) return null;
     seen.push(id);
     const { data } = await sb.from('prayer_requests').select(FEED_SELECT).eq('id', id).single();
@@ -1494,14 +1497,21 @@ async function loadFeed(reset) {
     feed.innerHTML = '';
     for (let i = 0; i < 3; i++) feed.append(h('div', { class: 'card pr-card' }, h('div', { class: 'skeleton', style: 'height:18px;width:40%' }), h('div', { class: 'skeleton', style: 'height:60px;margin-top:12px' })));
   }
-  S.feedLoading = true;
   const scope = S.scope;
+  if (scope === 'family' && !S.me.family) {
+    feed.innerHTML = ''; $('#moreBtn').hidden = true;
+    feed.append(h('div', { class: 'empty', style: 'grid-column:1/-1' }, h('div', { class: 'ic' }, '🌱'), '가족순을 먼저 입력해 주세요.',
+      h('div', { style: 'margin-top:12px' }, h('button', { class: 'btn btn-primary btn-sm', onclick: () => openProfileForm(false) }, '가족순 입력하기'))));
+    return;
+  }
+  S.feedLoading = true;
   let q = sb.from('prayer_requests')
     .select(FEED_SELECT)
     .order('created_at', { ascending: false })
     .range(S.feedPage * PAGE, S.feedPage * PAGE + PAGE - 1);
   if (scope === 'me') q = q.eq('user_id', S.me.id);
   if (scope === 'campus') q = q.eq('campus', S.me.campus);
+  if (scope === 'family') q = q.eq('family', S.me.family);
   const { data, error } = await q;
   S.feedLoading = false;
   if (scope !== S.scope) return; // 탭이 바뀐 경우 무시
@@ -1511,9 +1521,9 @@ async function loadFeed(reset) {
   S.feedPage++; S.feedDone = data.length < PAGE;
   $('#moreBtn').hidden = S.feedDone;
   if (reset && !data.length) {
-    const msg = scope === 'me' ? ['✍️', '아직 내 기도제목이 없어요.', '위의 [기도제목 추가]를 눌러 나눠 보세요.']
+    const msg = scope === 'me' ? ['✍️', '아직 내 기도제목이 없어요.', '오른쪽 아래 + 버튼을 눌러 나눠 보세요.']
       : scope === 'campus' ? ['🏫', `${S.me.campus}의 첫 기도제목을 나눠 주세요!`, '']
-      : ['🕊️', '아직 나눠진 기도제목이 없어요.', ''];
+      : ['🌱', `${S.me.family}의 첫 기도제목을 나눠 주세요!`, ''];
     feed.append(h('div', { class: 'empty', style: 'grid-column:1/-1' }, h('div', { class: 'ic' }, msg[0]), msg[1], msg[2] ? h('div', { style: 'font-size:13px;margin-top:4px' }, msg[2]) : null));
   }
 }
@@ -1611,7 +1621,7 @@ function prayerCard(r, onChange = null) {
 }
 
 function openCompose(existing = null, onSaved = null) {
-  const ta = h('textarea', { class: 'input', maxlength: 1000, placeholder: '함께 기도받고 싶은 제목을 자유롭게 적어 주세요.\n\n같은 캠퍼스와 경인·인천 지구 지체들이 함께 볼 수 있어요.' });
+  const ta = h('textarea', { class: 'input', maxlength: 1000, placeholder: '함께 기도받고 싶은 제목을 자유롭게 적어 주세요.\n\n같은 가족순과 같은 캠퍼스 지체들이 함께 볼 수 있어요.' });
   ta.value = existing ? existing.content : '';
   const cnt = h('div', { class: 'counter' }, `${ta.value.length} / 1000`);
   ta.oninput = () => { cnt.textContent = `${ta.value.length} / 1000`; };
