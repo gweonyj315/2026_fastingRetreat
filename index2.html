@@ -402,14 +402,16 @@ button.ledger-row:hover{background:rgba(220,226,251,.35)}
 button.ledger-row.new{animation:rowIn 1s ease}
 @keyframes rowIn{from{background:#FFF1CF}to{background:transparent}}
 .ledger-empty{padding:34px 16px;text-align:center;color:var(--ink-3);font-weight:600}
-.bank-guide{padding:4px 18px}
-.bank-guide summary{cursor:pointer;padding:12px 0;font-weight:800;color:var(--indigo);list-style:none}
-.bank-guide summary::-webkit-details-marker{display:none}
-.bank-guide summary::after{content:" ＋";color:var(--ink-3)}
-.bank-guide[open] summary::after{content:" －"}
-.bank-guide dl{margin:0 0 14px}
-.bank-guide dt{font-weight:800;font-size:14px;margin-top:10px}
-.bank-guide dd{margin:4px 0 0;color:var(--ink-2);font-size:14px}
+.fab-help{width:56px;min-width:56px;height:56px;padding:0;border-radius:50%;font-family:var(--display);font-weight:400;font-size:28px;line-height:1;
+  background:linear-gradient(145deg,var(--indigo-2),var(--peri))}
+.fab-help:hover{background:linear-gradient(145deg,var(--indigo),var(--peri))}
+#sec-bank{padding-bottom:76px}
+.bank-guide{display:grid;gap:12px}
+.bank-guide .g{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.bank-guide .g b{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--indigo)}
+.bank-guide .g b i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--peri-soft);display:grid;place-items:center;font-size:12.5px;font-weight:800}
+.bank-guide .g p{margin:6px 0 0;color:var(--ink-2);font-size:14.5px}
+.bank-guide .ex{margin-top:8px;display:inline-block;background:var(--sky-2);color:var(--indigo);font-weight:700;font-size:13px;padding:5px 10px;border-radius:999px}
 @media (min-width:900px){
   .bank{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start;gap:20px}
   .bank-left{position:sticky;top:80px}
@@ -632,14 +634,6 @@ button.ledger-row.new{animation:rowIn 1s ease}
             <div class="ledger-row ledger-head"><span>날짜</span><span>기도내용</span><span>기도시간</span><span>총 적립기도</span></div>
             <div id="ledgerBody"></div>
           </div>
-          <details class="card bank-guide">
-            <summary>기도통장이란?</summary>
-            <dl>
-              <dt>기도통장</dt><dd>각자의 자리에서 개인의 골방을 지키며 드린 기도를 시간으로 적립해, 하늘 통장에 기도를 쌓아가는 거예요.</dd>
-              <dt>적립 방법</dt><dd>기도한 시간을 분으로 적어요. 1시간 기도했다면 60분 적립! 총 적립기도는 지금까지 쌓인 시간에 이번 기도시간이 더해져요.</dd>
-              <dt>무엇을 적나요?</dt><dd>시간과 장소의 제한은 없어요. 다만 목적이 '개인의 골방'이라서 개인적으로 기도한 시간만 적어요. 채플과 교회 예배 시간은 빼고, 채플 기도리트릿은 넣어요.</dd>
-            </dl>
-          </details>
         </div>
       </div>
     </section>
@@ -649,6 +643,8 @@ button.ledger-row.new{animation:rowIn 1s ease}
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     <span class="fab-label">기도제목 추가</span>
   </button>
+
+  <button class="fab fab-help" id="bankHelpBtn" aria-label="기도통장이란?" hidden>?</button>
 
   <nav class="nav" id="nav" aria-label="섹션 이동">
     <button data-go="journey" class="on" aria-label="기도 여정">
@@ -1166,6 +1162,7 @@ function go(sec) {
   $$('.section').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
   $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   $('#addPrayerBtn').hidden = sec !== 'prayers';
+  $('#bankHelpBtn').hidden = sec !== 'bank';
   history.replaceState(history.state, '', location.pathname + location.search + '#' + sec);
   window.scrollTo(0, 0);
   if (sec === 'journey') loadJourney();
@@ -1877,6 +1874,17 @@ $('#bankForm').addEventListener('submit', async e => {
   toast(`${minutes}분이 기도통장에 적립됐어요 🙏`);
   loadBank();
 });
+$('#bankHelpBtn').onclick = () => {
+  const item = (n, t, p, ex) => h('div', { class: 'g' }, h('b', {}, h('i', {}, n), t), h('p', {}, p), ex ? h('span', { class: 'ex' }, ex) : null);
+  Sheet.show({
+    title: '기도통장이란?', sub: '하나님께 드리는 작은 기도도 차곡차곡 쌓여요',
+    body: h('div', { class: 'bank-guide' },
+      item('1', '기도통장', '각자의 자리에서 개인의 골방을 지키며 드린 기도를 시간으로 적립해, 하늘 통장에 기도를 쌓아가는 거예요.'),
+      item('2', '적립 방법', '기도한 시간을 분으로 적어요. 총 적립기도는 지금까지 쌓인 시간에 이번 기도시간이 더해져요.', '예) 1시간 기도 → 60분 적립'),
+      item('3', '무엇을 적나요?', "시간과 장소의 제한은 없어요. 다만 목적이 '개인의 골방'이라서 개인적으로 기도한 시간만 적어요.", '채플·교회 예배 ✕ · 채플 기도리트릿 ○')),
+    foot: h('button', { class: 'btn btn-primary', onclick: () => Sheet.close() }, '확인')
+  });
+};
 function openBankEntry(r) {
   const date = h('input', { class: 'input', type: 'date', max: kstToday() }); date.value = r.pray_date;
   const mins = h('input', { class: 'input', inputmode: 'numeric', maxlength: 4 }); mins.value = r.minutes;
