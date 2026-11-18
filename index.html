@@ -412,6 +412,9 @@ input[type=date].input{-webkit-appearance:none;appearance:none;min-width:0;displ
   border:1px solid rgba(255,255,255,.95);box-shadow:0 16px 36px -14px rgba(31,28,90,.45);
   transform:translate(-50%,calc(-100% - 30px));opacity:0;transition:transform .5s cubic-bezier(.2,1.25,.35,1),opacity .3s;pointer-events:none}
 .top-noti.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.top-noti.fold:not(.on){transform:translate(calc(-50% + var(--fx,0px)),var(--fy,0px)) scale(.08);opacity:0;
+  transition:transform .45s cubic-bezier(.5,0,.75,0),opacity .45s ease-in}
+.bell-btn.has-new::after{content:"";position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:#E8505B;box-shadow:0 0 0 2px #fff}
 .top-noti .ic{flex:none;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:22px;
   background:linear-gradient(145deg,#FFF3D3,#FFE2A0);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
 .top-noti .tx{flex:1;min-width:0;line-height:1.4}
@@ -1921,7 +1924,7 @@ async function loadBank() {
   renderBank();
   const t = sum.data && sum.data[0];
   BANK.summary = t || null;
-  if (t && Number(t.total_minutes) > 0 && S.section === 'bank') showBankNoti();
+  if (t && Number(t.total_minutes) > 0 && S.section === 'bank') autoBankNoti();
 }
 // 함께 쌓은 기도 알림 (상단 종 버튼으로 다시 볼 수 있음)
 function showBankNoti() {
@@ -1930,26 +1933,57 @@ function showBankNoti() {
   showTopNoti('🕊️', '함께 쌓은 기도', h('p', {}, '지금까지 ', h('b', {}, `${Number(t.people)}명`), '이 함께 ',
     h('b', {}, `${tot.toLocaleString()}분`), tot >= 60 ? `(${hm(tot)})` : '', '을 기도로 쌓았어요'));
 }
+// 알림이 한 번 종으로 접히면 10분 동안은 자동으로 다시 띄우지 않고, 새 소식이 있으면 종에 점만 표시
+const NOTI_COOLDOWN = 10 * 60 * 1000;
+const notiKey = () => 'gp-bank-noti-' + (S.me ? S.me.id : '');
+function lastNoti() { try { return JSON.parse(localStorage.getItem(notiKey()) || 'null'); } catch (e) { return BANK.lastNoti || null; } }
+function markNoti() {
+  const v = { at: Date.now(), total: BANK.summary ? Number(BANK.summary.total_minutes) : 0 };
+  BANK.lastNoti = v; try { localStorage.setItem(notiKey(), JSON.stringify(v)); } catch (e) {}
+  $('#bellBtn').classList.remove('has-new');
+}
+function autoBankNoti() {
+  const last = lastNoti() || BANK.lastNoti;
+  if (last && Date.now() - last.at < NOTI_COOLDOWN) {
+    if (BANK.summary && Number(BANK.summary.total_minutes) !== last.total) $('#bellBtn').classList.add('has-new');
+    return;
+  }
+  showBankNoti(); markNoti();
+}
 $('#bellBtn').onclick = async () => {
   const b = $('#bellBtn'); b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring');
   const { data } = await sb.rpc('prayer_bank_summary'); // 최신 합계로 다시 보여줌
   if (data) BANK.summary = data[0] || null;
-  showBankNoti();
+  showBankNoti(); markNoti();
 };
 
 /* 맨 위에서 내려왔다가 몇 초 뒤 올라가는 알림 */
 let notiTimer;
 function showTopNoti(icon, title, body, ms = 4500) {
   let el = $('#topNoti');
-  if (!el) { el = h('div', { class: 'top-noti', id: 'topNoti', role: 'status', 'aria-live': 'polite' }); el.onclick = () => el.classList.remove('on'); document.body.append(el); }
+  if (!el) { el = h('div', { class: 'top-noti', id: 'topNoti', role: 'status', 'aria-live': 'polite' }); el.onclick = () => foldNoti(el); document.body.append(el); }
   el.innerHTML = '';
   el.append(h('span', { class: 'ic' }, icon), h('div', { class: 'tx' }, h('small', {}, h('span', {}, title), h('span', {}, '지금')), body));
   el.classList.remove('on'); void el.offsetWidth;
   requestAnimationFrame(() => el.classList.add('on'));
-  clearTimeout(notiTimer); notiTimer = setTimeout(() => el.classList.remove('on'), ms);
+  el.classList.remove('fold');
+  clearTimeout(notiTimer); notiTimer = setTimeout(() => foldNoti(el), ms);
   let y0 = null; // 위로 쓸어 올리면 닫힘
   el.ontouchstart = e => { y0 = e.touches[0].clientY; };
-  el.ontouchmove = e => { if (y0 != null && e.touches[0].clientY - y0 < -20) { el.classList.remove('on'); y0 = null; } };
+  el.ontouchmove = e => { if (y0 != null && e.touches[0].clientY - y0 < -20) { foldNoti(el); y0 = null; } };
+}
+// 알림을 오른쪽 위 종 아이콘 쪽으로 접어 넣음
+function foldNoti(el) {
+  clearTimeout(notiTimer);
+  const bell = $('#bellBtn');
+  if (bell && !bell.hidden) {
+    const r = bell.getBoundingClientRect(), n = el.getBoundingClientRect();
+    el.style.setProperty('--fx', `${(r.left + r.width / 2) - (n.left + n.width / 2)}px`);
+    el.style.setProperty('--fy', `${(r.top + r.height / 2) - (n.top + n.height / 2)}px`);
+    el.classList.add('fold');
+    setTimeout(() => { bell.classList.remove('ring'); void bell.offsetWidth; bell.classList.add('ring'); }, 380);
+  }
+  el.classList.remove('on');
 }
 function renderBank(newId = null) {
   const today = kstToday(), wk = weekStart(today);
