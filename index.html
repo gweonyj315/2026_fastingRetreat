@@ -1993,8 +1993,8 @@ function attachNotiSwipe(el) {
     if (mode === 'x') {
       dx = mx;
       el.style.transition = 'none';
-      el.style.transform = `translate(calc(-50% + ${dx}px), 0) rotate(${dx / 40}deg)`;
-      el.style.opacity = String(Math.max(0, 1 - Math.abs(dx) / 260));
+      el.style.transform = `translate(calc(-50% + ${dx}px), 0)`;
+      el.style.opacity = String(Math.max(0.15, 1 - Math.abs(dx) / 360));
     } else if (mode === 'y' && my < -20) { x0 = null; el.dataset.dragged = 1; foldNoti(el); }
   });
   const end = () => {
@@ -2005,7 +2005,7 @@ function attachNotiSwipe(el) {
     if (mode === 'x' && Math.abs(dx) > 70) {
       const dir = dx > 0 ? 1 : -1;
       el.classList.add('swiped');
-      el.style.transform = `translate(calc(-50% + ${dir * 120}vw), 0) rotate(${dir * 12}deg)`;
+      el.style.transform = `translate(calc(-50% + ${dir * 120}vw), 0)`;
       el.style.opacity = '0';
       el.classList.remove('on');
       setTimeout(() => { el.classList.remove('swiped'); el.style.transform = ''; el.style.opacity = ''; }, 450);
