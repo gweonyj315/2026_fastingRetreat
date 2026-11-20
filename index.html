@@ -26,7 +26,8 @@
   /* 포스터에서 뽑은 색 */
   --indigo:#2F2A7E;      /* NO WAY? GOD'S WAY! 타이틀 */
   --indigo-2:#3D3796;
-  --peri:#6C7EE0;        /* 한글 부제 */
+  --peri:#6C7EE0;        /* 한글 부제 (큰 글씨·장식용) */
+  --peri-strong:#4A59C2; /* 작은 글씨·흰 글씨 바탕용 (대비 4.5:1 이상) */
   --peri-soft:#DCE2FB;
   --sky:#CFE2F7;         /* 하늘 */
   --sky-2:#E9EEFB;
@@ -37,7 +38,7 @@
   --rock:#4C4A49;        /* 바위 */
   --ink:#1D1C3A;
   --ink-2:#55557A;
-  --ink-3:#8A8CA8;
+  --ink-3:#5F6186;       /* 보조 글씨 (흰 바탕 5.9:1, 앱 배경 4.5:1 이상) */
   --line:rgba(47,42,126,.10);
   --card:rgba(255,255,255,.82);
   --ok:#3E9C78;
@@ -111,7 +112,7 @@ textarea.input{height:auto;min-height:150px;padding:14px;resize:vertical;line-he
 #auth .veil{position:fixed;inset:0;background:linear-gradient(180deg,rgba(207,226,247,.55),rgba(238,233,248,.9) 60%,#F6F3FA);z-index:-1}
 .brand{text-align:center;margin:10px 0 22px}
 .brand .t{font-family:var(--display);color:var(--indigo);font-size:clamp(44px,13vw,64px);line-height:.92;letter-spacing:.5px}
-.brand .s{color:var(--peri);font-weight:800;font-size:18px;margin-top:10px;letter-spacing:-.2px}
+.brand .s{color:var(--peri-strong);font-weight:800;font-size:18px;margin-top:10px;letter-spacing:-.2px}
 .brand .m{color:var(--ink-2);font-size:13.5px;margin-top:6px;font-weight:600}
 .auth-card{width:100%;max-width:420px;padding:22px 20px 20px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:#EDEFFA;border-radius:14px;padding:4px;margin-bottom:20px}
@@ -121,7 +122,8 @@ textarea.input{height:auto;min-height:150px;padding:14px;resize:vertical;line-he
 .auth-links button{padding:6px 8px;color:var(--ink-2);font-weight:600;font-size:13.5px;line-height:20px}
 /* 캠퍼스 선택 (펼쳐지는 목록) */
 .picker-btn{width:100%;height:50px;padding:0 14px;border-radius:14px;border:1.5px solid #DADDF0;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:16px;text-align:left;transition:border .2s,box-shadow .2s}
-.picker-btn .ph{color:#9A9CB5}
+.picker-btn .ph{color:var(--ink-3)}
+.input::placeholder,textarea.input::placeholder{color:var(--ink-3);opacity:1}
 .picker-btn .val{font-weight:700;color:var(--ink)}
 .picker-btn svg{flex:none;color:var(--ink-3);transition:transform .2s}
 .picker.open .picker-btn{border-color:var(--peri);box-shadow:0 0 0 4px rgba(108,126,224,.15)}
@@ -133,7 +135,7 @@ textarea.input{height:auto;min-height:150px;padding:14px;resize:vertical;line-he
 .picker-opt{width:100%;min-height:46px;padding:0 12px;border-radius:10px;text-align:left;font-size:15.5px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between}
 .picker-opt:hover{background:#F3F4FB}
 .picker.disabled .picker-btn{background:#F2F3F8;border-color:#E4E6F0;cursor:not-allowed}
-.picker.disabled .picker-btn .ph{color:#9A9CB5}
+.picker.disabled .picker-btn .ph{color:var(--ink-3)}
 .input:disabled{background:#F2F3F8;border-color:#E4E6F0;color:var(--ink-3);cursor:not-allowed}
 .input:disabled::placeholder{color:#A6A8BE}
 .field.off label{color:var(--ink-3)}
@@ -197,13 +199,17 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .dday{font-family:var(--display);font-size:15px;color:#fff;background:var(--night);padding:6px 11px;border-radius:10px;letter-spacing:.6px;white-space:nowrap}
 .progress{height:10px;border-radius:99px;background:#E4E7F7;overflow:hidden;margin-top:14px}
 .progress i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--peri),var(--indigo));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.hero-cta{height:46px;margin-top:14px;font-size:15px}
+@media (max-width:899px){.today-btn{background:var(--peri-soft);color:var(--indigo);box-shadow:none}.today-btn:hover{background:var(--peri-soft)}}
+@media (min-width:900px){.hero-cta{display:none}}
 .j-hero .meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);margin-top:7px;font-weight:600}
 .puzzle-frame{position:relative;border-radius:22px;overflow:hidden;background:var(--night);box-shadow:var(--shadow);aspect-ratio:1000/1250}
 .puzzle-frame svg{display:block;width:100%;height:100%}
 .pz-label{font-family:var(--display);fill:#fff;text-anchor:middle;pointer-events:none}
 .pz-label.n{font-size:46px;opacity:.78}
-.pz-label.d{font-size:24px;opacity:.6;font-family:var(--font);font-weight:700}
-.pz-label.locked{opacity:.32}
+.pz-label.d{font-size:27px;opacity:.85;font-family:var(--font);font-weight:700}
+.pz-label.locked{opacity:.55}
+.pz-label.tap{font-family:var(--font);font-weight:800;font-size:28px;fill:var(--gold);opacity:1}
 .pz-outline{fill:rgba(20,22,58,.18);stroke:rgba(255,255,255,.42);stroke-width:2.2;stroke-linejoin:round}
 .pz-outline.missed{fill:rgba(255,201,92,.07);stroke:rgba(255,214,140,.75);stroke-dasharray:10 8}
 .pz-outline.partial{fill:rgba(108,126,224,.22);stroke:rgba(220,226,251,.9)}
@@ -241,7 +247,7 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 20px 12px;flex:none;touch-action:none}
 .sheet-head h3{margin:0;font-size:19px;letter-spacing:-.3px}
 .sheet-head .sub{font-size:13px;color:var(--ink-2);margin-top:3px;font-weight:600}
-.x-btn{width:38px;height:38px;border-radius:50%;background:#ECEDF6;display:grid;place-items:center;color:var(--ink-2);flex:none}
+.x-btn{width:42px;height:42px;border-radius:50%;background:#ECEDF6;display:grid;place-items:center;color:var(--ink-2);flex:none}
 .sheet-body{overflow-y:auto;overscroll-behavior:contain;padding:4px 20px 20px;flex:1}
 .sheet-foot{flex:none;padding:12px 16px calc(12px + var(--safe-b));background:#fff;border-top:1px solid var(--line);display:flex;gap:10px}
 .sheet-foot .btn{flex:1;height:54px;font-size:15px}
@@ -270,7 +276,7 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
   background:linear-gradient(160deg,#EEF2FD,#F3EEFB);color:var(--ink-3);font-weight:600;font-size:14px}
 .topic-ph svg{width:44px;height:44px;opacity:.5}
 .pray-btn.done{background:#E2F4EC;color:#287258;box-shadow:none}
-.pray-btn.ic:not(.done){background:var(--peri)}
+.pray-btn.ic:not(.done){background:var(--peri-strong)}
 
 /* 관리자 */
 .admin-card{padding:16px 18px;border:1.5px dashed #B9C3F4;background:rgba(240,242,255,.85)}
@@ -287,7 +293,7 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .prog-row .bar{height:7px;border-radius:9px;background:#E4E7F7;overflow:hidden;margin-top:6px}
 .prog-row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--peri),var(--indigo))}
 .prog-row .num{font-family:var(--display);font-size:20px;color:var(--indigo);min-width:58px;text-align:right}
-.kick-btn{flex:none;height:32px;padding:0 10px;border-radius:9px;font-size:12.5px;font-weight:800;color:var(--danger);background:#FDECEE}
+.kick-btn{flex:none;height:40px;min-width:48px;padding:0 10px;border-radius:9px;font-size:12.5px;font-weight:800;color:var(--danger);background:#FDECEE}
 .kick-btn:active{transform:scale(.94)}
 .prog-row .num small{font-family:var(--font);font-size:12px;color:var(--ink-3);font-weight:700}
 @media (min-width:640px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
@@ -304,7 +310,7 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 @media (min-width:640px){.fab{padding:0 22px 0 18px}.fab .fab-label{display:inline}}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:4px;margin-bottom:14px;position:sticky;top:calc(62px + var(--safe-t));z-index:10;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .seg button{height:42px;border-radius:12px;font-weight:700;color:var(--ink-3);font-size:14.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
-.seg button small{font-size:11px;font-weight:600;opacity:.8;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.seg button small{font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
 .seg button.on{background:var(--indigo);color:#fff}
 .feed{display:grid;gap:12px;align-items:start}
 .gift-bar{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px 12px 12px;margin-bottom:14px;text-align:left;
@@ -321,23 +327,26 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .pr-card{padding:16px 16px 12px}
 .pr-head{display:flex;align-items:center;gap:10px}
 .pr-head .who{flex:1;min-width:0}
-.pr-head .who b{display:block;font-size:15px}
+.pr-head .who b{display:block;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-head .who-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.pr-head .who-top time{flex:none;font-size:12.5px;color:var(--ink-3);font-weight:600}
 .pr-head .who span{display:block;font-size:12.5px;color:var(--ink-3);font-weight:600}
-.more-btn{width:34px;height:34px;border-radius:10px;color:var(--ink-3);display:grid;place-items:center}
+.more-btn{width:44px;height:44px;margin:-6px -10px -6px 0;border-radius:12px;color:var(--ink-3);display:grid;place-items:center}
 .pr-content{margin:12px 0 12px;white-space:pre-wrap;font-size:15.5px;line-height:1.65;color:var(--ink)}
 .react-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.react{height:34px;padding:0 11px;border-radius:999px;background:#F1F2FA;border:1px solid transparent;font-size:14px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.react-sum{margin-top:8px;font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.react{height:40px;padding:0 11px;border-radius:999px;background:#F1F2FA;border:1px solid transparent;font-size:14px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:5px;transition:all .15s}
 .react.on{background:var(--peri-soft);border-color:#B9C3F4;color:var(--indigo)}
 .react:active{transform:scale(.92)}
 .react .e{font-size:16px}
-.cmt-toggle{margin-left:auto;height:34px;padding:0 10px;border-radius:10px;color:var(--ink-2);font-weight:700;font-size:13.5px;display:inline-flex;align-items:center;gap:5px}
+.cmt-toggle{margin-left:auto;height:40px;padding:0 6px;border-radius:10px;color:var(--ink-2);font-weight:700;font-size:13.5px;display:inline-flex;align-items:center;gap:5px}
 .cmts{margin-top:12px;border-top:1px dashed #DADDF0;padding-top:10px}
 .cmt{display:flex;gap:9px;padding:8px 0}
 .cmt .avatar{width:28px;height:28px;font-size:12px}
 .cmt .body{flex:1;min-width:0;background:#F3F4FB;border-radius:4px 14px 14px 14px;padding:8px 12px}
 .cmt .body b{font-size:13px}.cmt .body span{font-size:11.5px;color:var(--ink-3);margin-left:6px}
 .cmt .body p{margin:2px 0 0;font-size:14px;white-space:pre-wrap}
-.cmt .del{font-size:12px;color:var(--ink-3);padding:4px;align-self:flex-start}
+.cmt .del{font-size:12.5px;font-weight:700;color:var(--ink-3);min-width:44px;min-height:40px;padding:0 6px;border-radius:10px;align-self:flex-start}
 .cmt-form{display:flex;gap:8px;margin-top:8px}
 .cmt-form .input{height:44px;border-radius:12px}
 .cmt-form .btn{height:44px;flex:none}
@@ -358,7 +367,12 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .poster-card .dd b{font-family:var(--display);font-size:28px;font-weight:400;letter-spacing:.6px;display:block;line-height:1}
 .poster-card .dd span{font-size:12px;opacity:.85;font-weight:600}
 .theme-card{padding:20px}
-.theme-card .eyebrow{font-size:12px;font-weight:800;color:var(--peri);letter-spacing:1.5px}
+.reg-card{padding:18px}
+.reg-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.reg-card h3{margin:0;font-size:18px;letter-spacing:-.3px}
+.reg-card p{margin:4px 0 14px;color:var(--ink-2);font-size:14.5px;font-weight:600}
+.reg-card p b{color:var(--indigo)}
+.theme-card .eyebrow{font-size:12px;font-weight:800;color:var(--peri-strong);letter-spacing:1.5px}
 .theme-card .tt{font-family:var(--display);font-size:clamp(34px,10vw,46px);color:var(--indigo);line-height:1;margin:8px 0 6px;letter-spacing:.4px}
 .theme-card .ko{color:var(--peri);font-weight:800;font-size:17px}
 .info-list{padding:6px 18px}
@@ -369,6 +383,48 @@ main{max-width:1120px;margin:0 auto;padding:6px 16px calc(var(--nav-h) + 40px + 
 .info-row.hl dd{color:var(--indigo)}
 .link-btn{height:58px;font-size:16.5px;border-radius:18px;text-decoration:none}
 .notice{padding:16px 18px}
+/* 안내: 글 목록 / 글 보기 */
+.post-list{padding:2px 0}
+.post-item{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);transition:background .15s}
+.post-item:last-child{border-bottom:0}
+.post-item:hover{background:rgba(220,226,251,.35)}
+.post-item:active{background:rgba(220,226,251,.6)}
+.pi-ic{flex:none;width:44px;height:44px;border-radius:14px;background:var(--peri-soft);display:grid;place-items:center;font-size:21px}
+.pi-tx{flex:1;min-width:0}
+.pi-tx b{display:flex;align-items:center;gap:6px;font-size:15.5px;color:var(--ink)}
+.pi-tx span{display:block;margin-top:2px;font-size:13px;font-weight:600;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pi-chev{flex:none;color:var(--ink-3)}
+.post-view{animation:fadeUp .3s ease}
+.pv-back{display:inline-flex;align-items:center;gap:2px;height:40px;padding:0 14px 0 8px;border-radius:12px;font-weight:700;font-size:14.5px;color:var(--indigo);background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9)}
+.pv-head{margin:14px 2px 4px}
+.pv-head h2{margin:0;font-size:22px;letter-spacing:-.4px}
+.pv-head p{margin:4px 0 0;color:var(--ink-3);font-size:13.5px;font-weight:600}
+.pv-card{padding:18px;margin-top:12px}
+.pv-card h3{margin:0 0 12px;font-size:16.5px;display:flex;align-items:center;gap:8px}
+.pv-card p{margin:0;color:var(--ink-2);font-size:14.5px}
+.pv-card p+p{margin-top:8px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:st}
+.steps li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+.steps li::before{counter-increment:st;content:counter(st);flex:none;width:26px;height:26px;margin-top:-1px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center}
+.steps b{color:var(--ink)}
+.tips{margin:0;padding-left:18px;display:grid;gap:8px;font-size:14.5px;color:var(--ink-2)}
+.tips b{color:var(--ink)}
+.pv-card .req{margin-top:14px;font-size:13px;font-weight:600;color:var(--ink-3)}
+.push-ctl .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15.5px;color:var(--ink)}
+.push-ctl .st i{width:10px;height:10px;border-radius:50%;background:#C9CBDD;flex:none}
+.push-ctl.on .st i{background:var(--ok);box-shadow:0 0 0 4px rgba(62,156,120,.18)}
+.push-ctl .ds{margin:6px 0 14px;color:var(--ink-2);font-size:14px}
+.push-ctl .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.push-ctl .acts .btn{height:48px;font-size:15px}
+.push-ctl .acts .btn:only-child{grid-column:1/-1}
+.push-nudge{order:2;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;background:linear-gradient(90deg,#FFF6DE,#fff)}
+.push-nudge .ic{font-size:24px;line-height:1}
+.push-nudge .tx{flex:1;min-width:0}
+.push-nudge b{display:block;font-size:15px;color:var(--ink)}
+.push-nudge p{margin:2px 0 10px;font-size:13.5px;color:var(--ink-2)}
+.push-nudge .acts{display:flex;gap:8px}
+.push-nudge .acts .btn{height:40px}
+@media (max-width:899px){#sec-info.reading .poster-card{display:none} #sec-info .info-right{order:-1}}
 .notice h4{margin:0 0 4px;font-size:15.5px;display:flex;gap:6px;align-items:center}
 .notice p{margin:0;color:var(--ink-2);font-size:14px;white-space:pre-wrap}
 .notice time{font-size:12px;color:var(--ink-3)}
@@ -430,7 +486,7 @@ input[type=date].input{-webkit-appearance:none;appearance:none;min-width:0;displ
 .ledger-row .d{font-weight:700;color:var(--ink-2);font-size:13px;line-height:1.3}
 .ledger-row .d small{display:block;font-weight:600;color:var(--ink-3);font-size:11.5px}
 .ledger-row .c{color:var(--ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:keep-all;overflow-wrap:anywhere}
-.ledger-row .m{font-weight:800;color:var(--peri)}
+.ledger-row .m{font-weight:800;color:var(--peri-strong)}
 .ledger-row .t{font-family:var(--display);font-weight:400;font-size:17px;color:var(--indigo);letter-spacing:.3px}
 .ledger-row .t small{font-family:var(--font);font-weight:700;font-size:12px;margin-left:1px}
 button.ledger-row{width:100%;text-align:left;background:none;cursor:pointer;transition:background .15s}
@@ -438,10 +494,12 @@ button.ledger-row:hover{background:rgba(220,226,251,.35)}
 button.ledger-row.new{animation:rowIn 1s ease}
 @keyframes rowIn{from{background:#FFF1CF}to{background:transparent}}
 .ledger-empty{padding:34px 16px;text-align:center;color:var(--ink-3);font-weight:600}
-.fab-help{width:56px;min-width:56px;height:56px;padding:0;border-radius:50%;font-family:var(--display);font-weight:400;font-size:28px;line-height:1;
+.fab-help{width:48px;min-width:48px;height:48px;padding:0;border-radius:50%;font-family:var(--display);font-weight:400;font-size:28px;line-height:1;
   background:linear-gradient(145deg,var(--indigo-2),var(--peri))}
 .fab-help:hover{background:linear-gradient(145deg,var(--indigo),var(--peri))}
 #sec-bank{padding-bottom:76px}
+body.typing .fab-help{opacity:0;pointer-events:none;transform:scale(.6)}
+.fab-help{transition:opacity .2s,transform .2s}
 .bank-guide{display:grid;gap:12px}
 .bank-guide .g{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
 .bank-guide .g b{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--indigo)}
@@ -457,7 +515,7 @@ button.ledger-row.new{animation:rowIn 1s ease}
 /* ---------- 반응형: 태블릿 / PC ---------- */
 @media (min-width:640px){
   main{padding-left:24px;padding-right:24px}
-  .topbar{padding-left:24px;padding-right:24px}
+  .topbar{padding-left:max(24px,calc((100vw - 1120px) / 2 + 24px));padding-right:max(24px,calc((100vw - 1120px) / 2 + 24px))}
   .sheet-wrap{align-items:center;padding:24px}
   .sheet{border-radius:26px;max-height:88dvh;transform:translateY(30px) scale(.97);opacity:0;transition:transform .3s,opacity .25s}
   .sheet-wrap.on .sheet{transform:none;opacity:1}
@@ -465,6 +523,10 @@ button.ledger-row.new{animation:rowIn 1s ease}
   .sheet-head{padding-top:20px}
   .sheet-foot{border-radius:0 0 26px 26px}
   .feed{grid-template-columns:1fr 1fr}
+}
+@media (min-width:640px) and (max-width:899px){
+  .journey .puzzle-frame{width:100%;max-width:520px;margin:0 auto}
+  .journey .legend{justify-content:center}
 }
 @media (min-width:900px){
   .journey{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);align-items:start;gap:20px}
@@ -602,6 +664,7 @@ button.ledger-row.new{animation:rowIn 1s ease}
         <div class="j-right">
           <div class="card j-hero" id="jHero"></div>
           <div class="card today-card" id="todayCard"></div>
+          <div class="card push-nudge" id="pushNudge" hidden></div>
           <div class="card admin-card" id="adminCard" hidden></div>
         </div>
       </div>
@@ -631,14 +694,11 @@ button.ledger-row.new{animation:rowIn 1s ease}
           <div class="dd"><b id="infoDday">D-</b><span>수련회까지</span></div>
         </div>
         <div class="info-right">
-          <div class="card theme-card">
-            <div class="eyebrow">2026 CCC 경인금식수련회</div>
-            <div class="tt">NO WAY? GOD'S WAY!</div>
-            <div class="ko">길이 없는 곳에 길을 만드시는 하나님</div>
+          <div id="postListView">
+            <div class="sec-title" style="margin-top:0"><div><h2>안내</h2><p>글을 눌러서 자세히 볼 수 있어요</p></div></div>
+            <div class="card post-list" id="postList"></div>
           </div>
-          <dl class="card info-list" id="infoList" style="margin:0"></dl>
-          <div id="infoLinks" style="display:grid;gap:10px"></div>
-          <div id="notices" style="display:grid;gap:10px"></div>
+          <article class="post-view" id="postView" hidden></article>
         </div>
       </div>
     </section>
@@ -1134,6 +1194,7 @@ async function enterApp(isNew = false) {
   paintGift();
   if (isNew) toast(`${S.me.name}님, 환영합니다! 🙏`);
   route();
+  pushInit();
   await loadFamilyMeta();
   if (needsProfileInfo(S.me)) setTimeout(() => openProfileForm(true), 400);
 }
@@ -1205,16 +1266,26 @@ $('#meBtn').onclick = () => {
     if (pw1.value !== pw2.value) return toast('비밀번호가 일치하지 않아요');
     setBusy(pwBtn, true);
     const { error } = await sb.auth.updateUser({ password: pw1.value });
-    setBusy(pwBtn, false, '비밀번호 변경');
+    setBusy(pwBtn, false, '새 비밀번호로 변경');
     if (error) return toast(/different|same/i.test(error.message) ? '이전과 다른 비밀번호를 입력해 주세요' : '변경하지 못했어요. 다시 시도해 주세요');
     pw1.value = pw2.value = ''; toast('비밀번호가 변경되었어요');
   };
+  const pwBox = h('div', { hidden: true, style: 'margin-bottom:6px' }, h('div', { class: 'field' }, pw1), h('div', { class: 'field' }, pw2), pwBtn);
+  const pwToggle = h('button', { class: 'btn btn-ghost btn-block', style: 'height:46px;margin-bottom:10px', 'aria-expanded': 'false' }, '비밀번호 변경');
+  pwToggle.onclick = () => {
+    pwBox.hidden = !pwBox.hidden; pwToggle.setAttribute('aria-expanded', String(!pwBox.hidden));
+    pwToggle.textContent = pwBox.hidden ? '비밀번호 변경' : '비밀번호 변경 닫기';
+    if (!pwBox.hidden) setTimeout(() => pw1.focus(), 50);
+  };
+  pwBtn.textContent = '새 비밀번호로 변경'; pwBtn.className = 'btn btn-primary btn-block';
   const row = (k, v) => h('div', { class: 'info-row' }, h('dt', {}, k), h('dd', {}, v));
   const body = h('div', {},
     h('div', { style: 'display:flex;align-items:center;gap:12px;margin-bottom:10px' }, avatar(me.name), h('div', {}, h('b', { style: 'font-size:17px' }, me.name), h('div', { class: 'hint' }, `@${me.username}`))),
     h('dl', { class: 'card info-list', style: 'margin:0 0 10px' }, row('캠퍼스', me.campus), row('가족순', me.family || '-'), row('학과', me.department || '-'), row('학번', me.entry_year ? `${me.entry_year}학번` : '-'), row('아이디', me.username)),
-    h('button', { class: 'btn btn-ghost btn-block', style: 'height:46px;margin-bottom:18px', onclick: async () => { await Sheet.close(); openProfileForm(false); } }, '가족순·학과·학번 수정'),
-    h('div', { class: 'field' }, h('label', {}, '비밀번호 변경'), pw1), h('div', { class: 'field' }, pw2), pwBtn,
+    h('button', { class: 'btn btn-ghost btn-block', style: 'height:46px;margin-bottom:10px', onclick: async () => { await Sheet.close(); openProfileForm(false); } }, '가족순·학과·학번 수정'),
+    pwToggle, pwBox,
+    h('div', { class: 'card', style: 'padding:16px;margin-top:8px' }, pushControl(),
+      h('button', { class: 'btn btn-ghost btn-sm', style: 'margin-top:10px', onclick: async () => { await Sheet.close(); openPost('push'); } }, '알림 설정 방법 보기')),
     me.is_admin ? adminTools() : null,
     h('div', { class: 'card', style: 'padding:14px 16px;margin-top:18px;font-size:13.5px;color:var(--ink-2)' },
       h('b', { style: 'color:var(--ink)' }, '📱 홈 화면에 추가하기'), h('br'),
@@ -1223,7 +1294,9 @@ $('#meBtn').onclick = () => {
   const out = h('button', { class: 'btn btn-ghost', style: 'color:var(--danger)' }, '로그아웃');
   out.onclick = async () => {
     if (!(await dialog({ title: '로그아웃할까요?', ok: '로그아웃', cancel: '취소', danger: true }))) return;
-    await Sheet.close(); await sb.auth.signOut(); location.reload();
+    await Sheet.close();
+    if (PUSH.sub) { const ep = PUSH.sub.endpoint; try { await sb.rpc('remove_push_subscription', { p_endpoint: ep }); await PUSH.sub.unsubscribe(); } catch (e) {} }
+    await sb.auth.signOut(); location.reload();
   };
   Sheet.show({ title: '내 정보', body, foot: out });
 };
@@ -1269,6 +1342,7 @@ function go(sec) {
   window.scrollTo(0, 0);
   if (sec === 'journey') loadJourney();
   if (sec === 'prayers') loadFeed(true);
+  if (sec !== 'info' && INFO.current) { INFO.current = null; $('#postView').hidden = true; $('#postListView').hidden = false; $('#sec-info').classList.remove('reading'); }
   if (sec === 'info') loadInfo();
   if (sec === 'bank') loadBank();
 }
@@ -1382,7 +1456,11 @@ function renderPuzzle(snapDay = null) {
       const n = svgEl('text', { x: p.cx, y: p.cy + 10, class: 'pz-label n' + (st === 'locked' ? ' locked' : '') }); n.textContent = day;
       const dl = svgEl('text', { x: p.cx, y: p.cy + 42, class: 'pz-label d' + (st === 'locked' ? ' locked' : '') }); dl.textContent = info ? shortDate(info.pray_date) : '';
       gOutline.append(n, dl);
-      if (st === 'today') gGlow.append(svgEl('path', { d: p.d, class: 'pz-glow', filter: 'url(#glowF)' }));
+      if (st === 'today') {
+        gGlow.append(svgEl('path', { d: p.d, class: 'pz-glow', filter: 'url(#glowF)' }));
+        const tap = svgEl('text', { x: p.cx, y: p.cy + 76, class: 'pz-label tap' }); tap.textContent = '눌러서 기도';
+        gGlow.append(tap);
+      }
     }
     const hit = svgEl('path', { d: p.d, class: 'pz-hit' + (st === 'locked' ? ' locked' : ''), 'data-day': day, role: 'button', 'aria-label': `${day}일차 ${info ? fmtDate(info.pray_date) : ''}` });
     hit.addEventListener('click', () => onPieceClick(day));
@@ -1579,6 +1657,7 @@ async function openAdminProgress() {
 
 function renderJourneyCards() {
   renderAdminCard();
+  renderPushNudge();
   const today = kstToday(), tDay = todayDay();
   const doneCount = S.days.filter(d => isDone(d.day)).length;
   const dRetreat = daysBetween(today, RETREAT_START);
@@ -1586,7 +1665,7 @@ function renderJourneyCards() {
   const hero = $('#jHero'); hero.innerHTML = '';
   let title, sub;
   if (today < JOURNEY_START) { title = 'READY'; sub = `${fmtDate(JOURNEY_START)}부터 30일 기도 여정이 시작돼요`; }
-  else if (tDay) { title = `DAY ${String(tDay).padStart(2, '0')} / 30`; sub = fmtDate(today) + ' · 오늘의 조각이 빛나고 있어요'; }
+  else if (tDay) { title = `DAY ${String(tDay).padStart(2, '0')} / 30`; sub = fmtDate(today); }
   else { title = 'FINISH'; sub = '30일 기도 여정이 끝났어요. 수련회에서 만나요!'; }
   hero.append(
     h('div', { class: 'row' },
@@ -1594,6 +1673,9 @@ function renderJourneyCards() {
       h('div', { class: 'dday' }, dRetreat > 0 ? `D-${dRetreat}` : dRetreat === 0 ? 'D-DAY' : '♥')),
     h('div', { class: 'progress' }, h('i', { style: `width:${doneCount / 30 * 100}%` })),
     h('div', { class: 'meta' }, h('span', {}, `완성한 조각 ${doneCount} / 30`), h('span', {}, missed ? `놓친 날 ${missed}일` : '')));
+  // 핸드폰에서 첫 화면에 바로 보이는 오늘의 할 일
+  if (tDay && dayStatus(tDay) !== 'done')
+    hero.append(h('button', { class: 'btn btn-primary btn-block hero-cta', onclick: () => openDay(tDay) }, '오늘 기도하기 →'));
 
   const card = $('#todayCard'); card.innerHTML = '';
   if (doneCount === 30) {
@@ -1612,7 +1694,7 @@ function renderJourneyCards() {
     const g = S.logs.has(tDay + ':gyeongin'), i = S.logs.has(tDay + ':incheon');
     card.append(h('h3', {}, st === 'done' ? '오늘의 조각을 맞췄어요 ✓' : '오늘의 기도제목'),
       h('p', {}, st === 'done' ? '내일도 함께 기도해요!' : `경인지구 ${g ? '✓' : '○'} · 인천지구 ${i ? '✓' : '○'}  오늘 안에 두 지구 모두 기도해야 조각이 맞춰져요.`),
-      h('button', { class: 'btn btn-primary btn-block', onclick: () => openDay(tDay) }, st === 'done' ? '오늘 기도제목 다시 보기' : '오늘의 기도제목 보기'),
+      h('button', { class: 'btn btn-primary btn-block today-btn', onclick: () => openDay(tDay) }, st === 'done' ? '오늘 기도제목 다시 보기' : '오늘의 기도제목 보기'),
       h('div', { class: 'together' }, h('span', { style: 'font-size:22px' }, '🙏'), h('span', {}, '오늘 ', h('b', {}, `${S.stats[tDay] || 0}명`), '이 함께 기도를 완료했어요')));
   } else {
     card.append(h('h3', {}, '수련회에서 만나요!'), h('p', {}, `30일 동안 ${doneCount}개의 조각을 맞췄어요. 길이 없는 곳에 길을 만드시는 하나님을 기대해요!`));
@@ -1757,6 +1839,7 @@ function prayerCard(r, onChange = null) {
   const el = h('article', { class: 'card pr-card' });
   const content = h('p', { class: 'pr-content' }, r.content);
   const reactRow = h('div', { class: 'react-row' });
+  const reactSum = h('div', { class: 'react-sum', hidden: true });
   const cmtBtn = h('button', { class: 'cmt-toggle' });
   const cmtBox = h('div', { class: 'cmts', hidden: true });
   const paintCmtBtn = () => { cmtBtn.innerHTML = `${ICON.chat}<span>${cmtCount ? '댓글 ' + cmtCount : '댓글'}</span>`; };
@@ -1781,6 +1864,10 @@ function prayerCard(r, onChange = null) {
       reactRow.append(b);
     });
     reactRow.append(cmtBtn);
+    // 무엇을 눌렀는지 알 수 있게 한 줄 요약 (예: 🙏 기도할게요 2 · ❤️ 공감해요 1)
+    const parts = REACTS.map(rx => [rx, reactions.filter(x => x.emoji === rx.key).length]).filter(([, n]) => n);
+    reactSum.textContent = parts.map(([rx, n]) => `${rx.e} ${rx.label} ${n}`).join(' · ');
+    reactSum.hidden = !parts.length;
   };
   paintCmtBtn(); paintReacts();
 
@@ -1823,7 +1910,9 @@ function prayerCard(r, onChange = null) {
   }
 
   const head = h('div', { class: 'pr-head' }, avatar(name),
-    h('div', { class: 'who' }, h('b', {}, name + (mine ? ' (나)' : '')), h('span', {}, whoLine(r.author) || campus), h('span', {}, `${timeAgo(r.created_at)}${r.updated_at ? ' · 수정됨' : ''}`)),
+    h('div', { class: 'who' },
+      h('div', { class: 'who-top' }, h('b', {}, name + (mine ? ' (나)' : '')), h('time', {}, `${timeAgo(r.created_at)}${r.updated_at ? ' · 수정됨' : ''}`)),
+      h('span', {}, whoLine(r.author) || campus)),
     mine ? h('button', { class: 'more-btn', html: ICON.more, 'aria-label': '더보기' }) : null);
   if (mine) $('.more-btn', head).onclick = () => {
     Sheet.show({
@@ -1837,7 +1926,7 @@ function prayerCard(r, onChange = null) {
         } }, '삭제하기'))
     });
   };
-  el.append(head, content, reactRow, cmtBox);
+  el.append(head, content, reactRow, reactSum, cmtBox);
   return el;
 }
 
@@ -1874,28 +1963,244 @@ function openCompose(existing = null, onSaved = null) {
    섹션 3: 수련회 안내 (DB에서 불러옴)
    ========================================================= */
 $('#posterCard').onclick = () => viewer('assets/poster-hd.webp', '경인금식수련회 포스터');
+const INFO = { info: [], links: [], notices: [], loaded: false, current: null };
+const CHEV = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 async function loadInfo() {
   const d = daysBetween(kstToday(), RETREAT_START);
   $('#infoDday').textContent = d > 0 ? `D-${d}` : d === 0 ? 'D-DAY' : 'THANK YOU';
-  if (S.infoLoaded) return;
-  const list = $('#infoList'); list.innerHTML = '';
-  for (let i = 0; i < 5; i++) list.append(h('div', { class: 'skeleton', style: 'height:20px;margin:16px 0' }));
-  const [info, links, notices] = await Promise.all([
-    sb.from('retreat_info').select('label,value,link_url,highlight').order('sort_order'),
-    sb.from('retreat_links').select('label,url,primary_button').order('sort_order'),
-    sb.from('notices').select('title,body,pinned,created_at').order('pinned', { ascending: false }).order('created_at', { ascending: false }),
-  ]);
-  list.innerHTML = '';
-  (info.data || []).forEach(r => list.append(h('div', { class: 'info-row' + (r.highlight ? ' hl' : '') },
-    h('dt', {}, r.label), h('dd', {}, r.link_url ? h('a', { href: r.link_url, target: '_blank', rel: 'noopener' }, r.value) : r.value))));
-  const lb = $('#infoLinks'); lb.innerHTML = '';
-  (links.data || []).forEach(l => lb.append(h('a', { class: 'btn link-btn ' + (l.primary_button ? 'btn-primary' : 'btn-ghost'), href: l.url, target: '_blank', rel: 'noopener' }, l.label, ' →')));
-  const nb = $('#notices'); nb.innerHTML = '';
-  if ((notices.data || []).length) nb.append(h('h3', { style: 'margin:8px 2px 0;font-size:17px' }, '📢 공지사항'));
-  (notices.data || []).forEach(n => nb.append(h('div', { class: 'card notice' },
-    h('h4', {}, n.pinned ? h('span', { class: 'badge b-peri' }, '고정') : null, n.title),
-    n.body ? h('p', {}, n.body) : null, h('time', {}, timeAgo(n.created_at)))));
-  S.infoLoaded = !info.error;
+  if (!INFO.loaded) {
+    const list = $('#postList'); list.innerHTML = '';
+    for (let k = 0; k < 3; k++) list.append(h('div', { class: 'skeleton', style: 'height:44px;margin:16px' }));
+    const [info, links, notices] = await Promise.all([
+      sb.from('retreat_info').select('label,value,link_url,highlight').order('sort_order'),
+      sb.from('retreat_links').select('label,url,primary_button').order('sort_order'),
+      sb.from('notices').select('id,title,body,pinned,created_at').order('pinned', { ascending: false }).order('created_at', { ascending: false }),
+    ]);
+    INFO.info = info.data || []; INFO.links = links.data || []; INFO.notices = notices.data || [];
+    INFO.loaded = !info.error;
+  }
+  renderPostList();
+  if (INFO.current) renderPost(INFO.current);
+}
+// '마감'이 들어간 안내 항목(예: 가등록 마감 · 12월 6일(일)까지)과 남은 날
+function regDeadline() {
+  const dl = INFO.info.find(r => r.label.includes('마감'));
+  if (!dl) return null;
+  const m = dl.value.match(/(\d{1,2})월\s*(\d{1,2})일/);
+  const left = m ? daysBetween(kstToday(), `${RETREAT_START.slice(0, 4)}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}`) : null;
+  return { ...dl, left };
+}
+function postItems() {
+  const dl = regDeadline(), st = pushState();
+  const notice = n => ({ id: 'n' + n.id, icon: '📢', title: n.title, sub: timeAgo(n.created_at), badge: n.pinned ? ['b-peri', '고정'] : null });
+  return [
+    ...INFO.notices.filter(n => n.pinned).map(notice),
+    { id: 'register', icon: '📝', title: '금식수련회 등록 안내', sub: dl ? `${dl.label} ${dl.value}` : '일시·장소·회비·등록 링크',
+      badge: dl && dl.left != null && dl.left >= 0 ? ['b-gold', dl.left === 0 ? '오늘 마감' : `마감 D-${dl.left}`] : null },
+    { id: 'push', icon: '🔔', title: '기도 알림 설정 방법', sub: '아이폰·안드로이드 · 기도 안 한 날 12시·18시',
+      badge: st === 'on' ? ['b-ok', '켜짐'] : null },
+    ...INFO.notices.filter(n => !n.pinned).map(notice),
+  ];
+}
+function renderPostList() {
+  const list = $('#postList'); list.innerHTML = '';
+  postItems().forEach(it => list.append(h('button', { class: 'post-item', onclick: () => openPost(it.id) },
+    h('span', { class: 'pi-ic', 'aria-hidden': 'true' }, it.icon),
+    h('span', { class: 'pi-tx' }, h('b', {}, it.title, it.badge ? h('span', { class: 'badge ' + it.badge[0] }, it.badge[1]) : null), h('span', {}, it.sub)),
+    h('span', { class: 'pi-chev', html: CHEV }))));
+}
+function openPost(id, push = true) {
+  if (S.section !== 'info') go('info');
+  INFO.current = id;
+  renderPost(id);
+  $('#postListView').hidden = true; $('#postView').hidden = false;
+  $('#sec-info').classList.add('reading');
+  window.scrollTo(0, 0);
+  if (push) history.pushState({ post: id }, '');
+}
+function closePost(fromPop = false) {
+  if (!INFO.current) return;
+  INFO.current = null;
+  $('#postView').hidden = true; $('#postListView').hidden = false;
+  $('#sec-info').classList.remove('reading');
+  renderPostList();
+  if (!fromPop && history.state && history.state.post) history.back();
+}
+window.addEventListener('popstate', () => { if (INFO.current && !(history.state && history.state.post) && !Sheet.open) closePost(true); });
+function renderPost(id) {
+  const v = $('#postView'); v.innerHTML = '';
+  const back = h('button', { class: 'pv-back', onclick: () => closePost() }, h('span', { html: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>' }), '안내 목록');
+  const head = (title, meta) => h('div', { class: 'pv-head' }, h('h2', {}, title), meta ? h('p', {}, meta) : null);
+  v.append(back);
+  if (id === 'register') {
+    const dl = regDeadline();
+    v.append(head('금식수련회 등록 안내', '2026 CCC 경인금식수련회'));
+    const reg = h('div', { class: 'card pv-card' },
+      h('div', { class: 'reg-top' }, h('h3', { style: 'margin:0' }, '등록하기'),
+        dl && dl.left != null && dl.left >= 0 ? h('span', { class: 'badge b-gold' }, dl.left === 0 ? '오늘 마감' : `마감 D-${dl.left}`) : null),
+      h('p', { style: 'margin:6px 0 14px;font-weight:600' }, dl ? [`${dl.label} `, h('b', { style: 'color:var(--indigo)' }, dl.value)] : '아래 버튼으로 등록할 수 있어요.'),
+      h('div', { style: 'display:grid;gap:10px' }, INFO.links.map(l => h('a', { class: 'btn link-btn ' + (l.primary_button ? 'btn-primary' : 'btn-ghost'), href: l.url, target: '_blank', rel: 'noopener' }, l.label, ' →'))));
+    const list = h('dl', { class: 'card info-list', style: 'margin:12px 0 0' },
+      INFO.info.map(r => h('div', { class: 'info-row' + (r.highlight ? ' hl' : '') },
+        h('dt', {}, r.label), h('dd', {}, r.link_url ? h('a', { href: r.link_url, target: '_blank', rel: 'noopener' }, r.value) : r.value))));
+    v.append(reg, list);
+  } else if (id === 'push') {
+    v.append(head('기도 알림 설정 방법', '오늘 기도를 아직 안 했다면 12시·18시에 알려드려요'));
+    const ios = h('div', { class: 'card pv-card', id: 'guide-ios' },
+      h('h3', {}, '🍎 아이폰', isIOS ? h('span', { class: 'badge b-peri' }, '내 기기') : null),
+      h('ol', { class: 'steps' },
+        h('li', {}, h('span', {}, h('b', {}, '사파리'), '로 기도앱 주소를 열어요.')),
+        h('li', {}, h('span', {}, '아래쪽 ', h('b', {}, '공유 버튼(□↑)'), ' → ', h('b', {}, '홈 화면에 추가'), ' → ', h('b', {}, '추가'), '를 눌러요.')),
+        h('li', {}, h('span', {}, '홈 화면에 생긴 ', h('b', {}, '경인금식기도'), ' 아이콘으로 앱을 열고 로그인해요.')),
+        h('li', {}, h('span', {}, '[안내] → [기도 알림 설정 방법]에서 ', h('b', {}, '알림 켜기'), '를 누르고 ', h('b', {}, '허용'), '을 눌러요.'))),
+      h('p', { class: 'req' }, 'iOS 16.4 이상에서 돼요 (설정 → 일반 → 정보에서 확인). 사파리 탭에서는 알림을 받을 수 없어요.'));
+    const android = h('div', { class: 'card pv-card', id: 'guide-android' },
+      h('h3', {}, '🤖 안드로이드', !isIOS && /android/i.test(navigator.userAgent) ? h('span', { class: 'badge b-peri' }, '내 기기') : null),
+      h('ol', { class: 'steps' },
+        h('li', {}, h('span', {}, h('b', {}, '크롬'), '(또는 삼성 인터넷)으로 기도앱 주소를 열고 로그인해요.')),
+        h('li', {}, h('span', {}, '[안내] → [기도 알림 설정 방법]에서 ', h('b', {}, '알림 켜기'), '를 누르고 ', h('b', {}, '허용'), '을 눌러요.')),
+        h('li', {}, h('span', {}, '(추천) 크롬 메뉴 ', h('b', {}, '⋮'), ' → ', h('b', {}, '홈 화면에 추가'), '로 앱처럼 쓸 수 있어요.'))));
+    const trouble = h('div', { class: 'card pv-card' },
+      h('h3', {}, '🙋 알림이 안 와요'),
+      h('ul', { class: 'tips' },
+        h('li', {}, h('b', {}, '아이폰: '), '설정 → 알림 → 경인금식기도 → 알림 허용을 켜 주세요. 집중 모드(방해금지)도 확인해 주세요.'),
+        h('li', {}, h('b', {}, '안드로이드: '), '주소창 왼쪽 아이콘 → 권한 → 알림을 허용으로 바꿔 주세요. 휴대폰 설정 → 애플리케이션 → 크롬 → 알림도 켜져 있어야 해요.'),
+        h('li', {}, '알림을 켠 뒤 ', h('b', {}, '테스트 알림 보내기'), '로 바로 확인할 수 있어요.'),
+        h('li', {}, '오늘 두 지구 기도를 모두 마쳤다면 그날은 알림이 오지 않아요.')));
+    const pc = h('div', { class: 'card pv-card' }, h('h3', {}, '💻 PC'),
+      h('p', {}, '크롬·엣지에서도 알림을 켤 수 있어요. 브라우저 프로그램이 켜져 있을 때 알림이 와요.'));
+    v.append(h('div', { class: 'card pv-card' }, pushControl()), ...(isIOS ? [ios, android] : [android, ios]), trouble, pc);
+  } else if (id.startsWith('n')) {
+    const n = INFO.notices.find(x => 'n' + x.id === id);
+    if (!n) { closePost(); return; }
+    v.append(head(n.title, `${n.pinned ? '📌 고정 · ' : ''}${timeAgo(n.created_at)}`),
+      h('div', { class: 'card pv-card' }, h('p', { style: 'white-space:pre-wrap' }, n.body || '')));
+  }
+}
+
+/* =========================================================
+   기도 알림 (웹 푸시)
+   ========================================================= */
+const VAPID_PUBLIC = 'BPbmdgnqUCdLaZeVXgukbEDqSdo9ZVZoKEkvtaasHFdkP6ljw9t0sZ2gy_h3tBc8Zic7TRTW6OJcyvR1tqjlxvs';
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const PUSH = { supported: 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window, reg: null, sub: null };
+function b64uToU8(str) {
+  const pad = '='.repeat((4 - str.length % 4) % 4), raw = atob((str + pad).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from(raw, c => c.charCodeAt(0));
+}
+function pushState() {
+  if (isIOS && !isStandalone()) return 'ios-browser';
+  if (!PUSH.supported) return 'unsupported';
+  if (Notification.permission === 'denied') return 'denied';
+  if (PUSH.sub && Notification.permission === 'granted') return 'on';
+  return 'off';
+}
+async function savePushSub(sub) {
+  const j = sub.toJSON();
+  const { error } = await sb.rpc('save_push_subscription', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth, p_ua: navigator.userAgent });
+  return !error;
+}
+async function pushInit() {
+  if (!('serviceWorker' in navigator)) { paintPushUI(); return; }
+  try {
+    PUSH.reg = await navigator.serviceWorker.register('sw.js');
+    if (PUSH.supported) PUSH.sub = await PUSH.reg.pushManager.getSubscription();
+    // 다른 계정으로 로그인했을 수 있으니 이 기기 구독을 지금 계정으로 다시 저장
+    if (PUSH.sub && Notification.permission === 'granted' && S.me) await savePushSub(PUSH.sub);
+  } catch (e) { /* 알림을 못 써도 앱은 그대로 */ }
+  paintPushUI();
+}
+async function enablePush(btn) {
+  // 아이폰은 버튼을 누른 바로 그 순간에 권한을 물어야 해서 맨 먼저 요청
+  let perm;
+  try { perm = await Notification.requestPermission(); } catch (e) { perm = 'default'; }
+  if (perm !== 'granted') { paintPushUI(); return toast(perm === 'denied' ? '알림이 차단됐어요. 아래 "알림이 안 와요"를 확인해 주세요' : '알림을 허용해야 받을 수 있어요'); }
+  setBusy(btn, true);
+  try {
+    const reg = PUSH.reg || await navigator.serviceWorker.register('sw.js');
+    await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToU8(VAPID_PUBLIC) });
+    if (!(await savePushSub(sub))) throw new Error('save');
+    PUSH.reg = reg; PUSH.sub = sub;
+    toast('🔔 기도 알림을 켰어요. 기도 안 한 날 12시·18시에 알려드려요');
+  } catch (e) { toast('알림을 켜지 못했어요. 잠시 후 다시 시도해 주세요'); }
+  setBusy(btn, false); paintPushUI();
+}
+async function disablePush(btn) {
+  if (!(await dialog({ title: '기도 알림을 끌까요?', message: '이 기기에서 12시·18시 알림을 더 이상 받지 않아요.', ok: '알림 끄기', cancel: '취소' }))) return;
+  setBusy(btn, true);
+  if (PUSH.sub) {
+    const ep = PUSH.sub.endpoint;
+    try { await PUSH.sub.unsubscribe(); } catch (e) {}
+    await sb.rpc('remove_push_subscription', { p_endpoint: ep });
+    PUSH.sub = null;
+  }
+  setBusy(btn, false); paintPushUI(); toast('기도 알림을 껐어요');
+}
+async function testPush(btn) {
+  setBusy(btn, true);
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-reminders`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ test: true })
+    });
+    const j = await res.json().catch(() => ({}));
+    toast(res.ok && j.sent ? '테스트 알림을 보냈어요. 잠시 후 확인해 보세요' : (j.error || '테스트 알림을 보내지 못했어요'));
+  } catch (e) { toast('테스트 알림을 보내지 못했어요'); }
+  setBusy(btn, false, '테스트 알림 보내기');
+}
+// 알림 상태 + 버튼 (안내 글·내 정보에서 함께 씀)
+function pushControl() {
+  const el = h('div', { class: 'push-ctl' });
+  el._paint = () => {
+    const st = pushState(); el.className = 'push-ctl ' + st; el.innerHTML = '';
+    const txt = {
+      on: ['기도 알림 켜짐', '오늘 두 지구 기도를 마치지 않았다면 12시와 18시에 알려드려요.'],
+      off: ['기도 알림 꺼짐', '알림을 켜면 기도 안 한 날 12시와 18시에 알려드려요.'],
+      'ios-browser': ['홈 화면에 추가가 필요해요', '아이폰은 홈 화면에 추가한 앱에서만 알림을 받을 수 있어요. 아래 아이폰 방법을 따라 주세요.'],
+      denied: ['알림이 차단되어 있어요', '아래 "알림이 안 와요"를 따라 알림을 허용한 뒤 다시 켜 주세요.'],
+      unsupported: ['이 브라우저는 알림을 지원하지 않아요', '아이폰은 사파리(iOS 16.4 이상), 안드로이드는 크롬으로 열어 주세요.'],
+    }[st];
+    el.append(h('div', { class: 'st' }, h('i'), txt[0]), h('p', { class: 'ds' }, txt[1]));
+    const acts = h('div', { class: 'acts' });
+    if (st === 'on') {
+      const t = h('button', { class: 'btn btn-soft' }, '테스트 알림 보내기'); t.onclick = () => testPush(t);
+      const o = h('button', { class: 'btn btn-ghost' }, '알림 끄기'); o.onclick = () => disablePush(o);
+      acts.append(t, o);
+    } else if (st === 'off') {
+      const b = h('button', { class: 'btn btn-primary' }, '🔔 알림 켜기'); b.onclick = () => enablePush(b);
+      acts.append(b);
+    } else if (st === 'ios-browser' && !$('#guide-ios')) {
+      acts.append(h('button', { class: 'btn btn-primary', onclick: async () => { if (Sheet.open) await Sheet.close(); openPost('push'); } }, '설정 방법 보기'));
+    }
+    if (acts.childNodes.length) el.append(acts);
+  };
+  el._paint();
+  return el;
+}
+function paintPushUI() {
+  $$('.push-ctl').forEach(el => el._paint && el._paint());
+  if (!INFO.current && $('#postList').childNodes.length && INFO.loaded) renderPostList();
+  renderPushNudge();
+}
+// 기도여정: 알림을 아직 안 켠 사람에게 한 번 권하기 (다음에 → 3일 동안 숨김)
+function renderPushNudge() {
+  const box = $('#pushNudge'); if (!box) return;
+  const st = pushState();
+  let snoozed = false; try { snoozed = Date.now() < Number(localStorage.getItem('gp-push-nudge') || 0); } catch (e) {}
+  if (!S.me || st === 'on' || st === 'unsupported' || snoozed) { box.hidden = true; return; }
+  box.hidden = false; box.innerHTML = '';
+  const main = st === 'off'
+    ? h('button', { class: 'btn btn-primary btn-sm' }, '알림 켜기')
+    : h('button', { class: 'btn btn-primary btn-sm', onclick: () => openPost('push') }, '설정 방법 보기');
+  if (st === 'off') main.onclick = () => enablePush(main);
+  box.append(h('span', { class: 'ic', 'aria-hidden': 'true' }, '🔔'),
+    h('div', { class: 'tx' }, h('b', {}, '기도 알림 받기'),
+      h('p', {}, '오늘 기도를 아직 안 했다면 12시·18시에 알려드려요.'),
+      h('div', { class: 'acts' }, main,
+        h('button', { class: 'btn btn-ghost btn-sm', onclick: () => { try { localStorage.setItem('gp-push-nudge', String(Date.now() + 3 * 864e5)); } catch (e) {} box.hidden = true; } }, '다음에'))));
 }
 
 
@@ -2082,6 +2387,11 @@ $('#bankForm').addEventListener('submit', async e => {
   toast(`${minutes}분이 기도통장에 적립됐어요 🙏`);
   loadBank();
 });
+// 기도통장 입력칸에 쓰는 동안은 ? 버튼을 숨겨 입력칸을 가리지 않게 함
+$('#bankForm').addEventListener('focusin', e => { if (e.target.matches('input')) document.body.classList.add('typing'); });
+$('#bankForm').addEventListener('focusout', () => setTimeout(() => {
+  if (!$('#bankForm').contains(document.activeElement)) document.body.classList.remove('typing');
+}, 0));
 $('#bankHelpBtn').onclick = () => {
   const item = (n, t, p, ex) => h('div', { class: 'g' }, h('b', {}, h('i', {}, n), t), h('p', {}, p), ex ? h('span', { class: 'ex' }, ex) : null);
   Sheet.show({
